@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rimufic ✨ Gerador de Prompts</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #8a2be2; /* Roxo vibrante */
+            --secondary: #ff1493; /* Rosa neon */
+            --accent: #00d2ff; /* Azul claro */
+            --bg-base: #0a0a16;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --text-main: #f8f9fa;
+            --text-muted: #a0aec0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(138, 43, 226, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 20, 147, 0.15), transparent 25%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 50px;
+            box-shadow: 0 25px 50px -12px var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efeito de brilho no topo do container */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-title i {
+            font-size: 2.5rem;
+            -webkit-text-fill-color: var(--secondary); /* Fallback para ícone */
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 4px;
+        }
+
+        .form-group label i {
+            color: var(--secondary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        select.form-control option {
+            background-color: var(--bg-gradient-2);
+            color: white;
+            padding: 10px;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .btn-generate {
+            grid-column: 1 / -1;
+            margin-top: 15px;
+            padding: 20px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 20, 147, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: translateY(1px);
+        }
+
+        .btn-generate i {
+            font-size: 1.3rem;
+            transition: transform 0.5s ease;
+        }
+
+        .btn-generate:hover i {
+            transform: rotate(180deg);
+        }
+
+        .output-wrapper {
+            margin-top: 50px;
+            display: none; /* Ativado via JS */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .output-wrapper.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .output-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .output-header h2 i {
+            color: var(--accent);
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-copy:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-copy.copied {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+            color: #2ecc71;
+        }
+
+        .prompt-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid var(--glass-border);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .prompt-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        .prompt-box::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        .prompt-box::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        .prompt-box::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        /* Formatação Interna do HTML do Prompt */
+        .prompt-box strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .prompt-box .section-title {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .prompt-box .highlight {
+            color: #fcd34d; /* Dourado para avisos/comandos */
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                border-radius: 24px;
+            }
+            .grid-form {
+                grid-template-columns: 1fr;
+            }
+            .brand-title {
+                font-size: 2.2rem;
+            }
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .btn-copy {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 class="brand-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Rimufic</h1>
+            <p class="subtitle">O gerador definitivo de prompts cinematográficos para sua próxima fanfic. Agora com suporte a capítulos contínuos!</p>
+        </header>
+
+        <form id="fanficForm" class="grid-form">
+            <div class="form-group">
+                <label><i class="fa-solid fa-book-journal-whills"></i> Fandom / Universo</label>
+                <input type="text" id="fandom" class="form-control" placeholder="Ex: Harry Potter, Percy Jackson, Original" value="Winx Club">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-masks-theater"></i> Tom / Atmosfera</label>
+                <select id="vibe" class="form-control">
+                    <option value="slowburn">Slow Burn (Romance lento e tenso)</option>
+                    <option value="angst">Angst (Drama emocional profundo)</option>
+                    <option value="fluff">Fluff (Fofo, doce e confortável)</option>
+                    <option value="dark">Dark (Sombrio, mistério, tensão)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-user-astronaut"></i> Personagem A</label>
+                <input type="text" id="charA" class="form-control" placeholder="Ex: Bloom" value="Bloom">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-user-ninja"></i> Personagem B</label>
+                <input type="text" id="charB" class="form-control" placeholder="Ex: Valtor" value="Valtor">
+            </div>
+
+            <div class="form-group full-width">
+                <label><i class="fa-solid fa-heart-crack"></i> Tropo Principal (Dinâmica)</label>
+                <select id="trope" class="form-control">
+                    <option value="enemies">Inimigos para Amantes (Enemies to Lovers)</option>
+                    <option value="friends" selected>Amigos para Amantes (Friends to Lovers)</option>
+                    <option value="forced">Proximidade Forçada (Forced Proximity)</option>
+                    <option value="secret">Identidade Secreta / Disfarce</option>
+                    <option value="rivals">Rivais para Amantes (Rivals to Lovers)</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label><i class="fa-solid fa-bolt"></i> Evento Inicial / Gancho</label>
+                <input type="text" id="trigger" class="form-control" placeholder="O que força eles a interagirem?" value="Uma ligação mágica os conecta após um feitiço dar errado.">
+            </div>
+
+            <div class="form-group full-width">
+                <label><i class="fa-solid fa-pen-nib"></i> Detalhes Específicos (Cenas, Diálogos, Regras extras)</label>
+                <textarea id="details" class="form-control" placeholder="Descreva cenas específicas que você quer que aconteçam na história...">Eles precisam esconder essa nova conexão dos amigos dela. Quero muita troca de olhares intensos.</textarea>
+            </div>
+
+            <button type="button" class="btn-generate" id="generateBtn">
+                <i class="fa-solid fa-gear"></i> Gerar Prompt Rimufic
+            </button>
+        </form>
+
+        <div class="output-wrapper" id="outputWrapper">
+            <div class="output-header">
+                <h2><i class="fa-solid fa-scroll"></i> Seu Prompt Profissional</h2>
+                <button class="btn-copy" id="copyBtn">
+                    <i class="fa-regular fa-copy"></i> Copiar Prompt
+                </button>
+            </div>
+            <div class="prompt-box" id="promptOutput">
+                <!-- O conteúdo gerado vai aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const outputWrapper = document.getElementById('outputWrapper');
+            const promptOutput = document.getElementById('promptOutput');
+            const copyBtn = document.getElementById('copyBtn');
+
+            const phaseMaps = {
+                enemies: {
+                    title: "Desenvolvimento: Inimigos para Amantes",
+                    phases: [
+                        "A Animosidade Inicial: Foco no conflito aberto, trocas de farpas afiadas e desconfiança. Mostre as diferenças ideológicas.",
+                        "O Respeito Relutante: Uma situação de perigo revela a competência um do outro. Eles se odeiam, mas reconhecem o valor do adversário.",
+                        "A Vulnerabilidade: As barreiras caem momentaneamente. Um momento de exaustão revela o lado humano de um deles.",
+                        "A Atração Proibida: A tensão vira física. Ambos lutam contra a atração, considerando-a uma traição aos próprios princípios.",
+                        "A Rendição: O momento em que a atração se torna maior que o ódio, culminando em uma cena carregada de emoção contida."
+                    ]
+                },
+                friends: {
+                    title: "Desenvolvimento: Amigos para Amantes",
+                    phases: [
+                        "A Zona de Conforto: Mostre a intimidade que já existe. Piadas internas, toques casuais sem malícia e confiança cega.",
+                        "A Mudança de Perspectiva: Um detalhe bobo faz um deles enxergar o outro de forma diferente (um olhar demorado, um momento arrumando o cabelo).",
+                        "O Ciúme Oculto: A inserção de um fator externo (uma festa, um encontro com outra pessoa) desperta um ciúme confuso.",
+                        "A Tensão do 'E se?': Os toques antes inocentes agora parecem elétricos. Ambos têm medo de confessar e estragar a amizade.",
+                        "A Confissão: Um momento de pura honestidade onde as cartas são colocadas na mesa."
+                    ]
+                },
+                forced: {
+                    title: "Desenvolvimento: Proximidade Forçada",
+                    phases: [
+                        "O Incomodo: Eles detestam estar presos na mesma situação. Há brigas por espaço e irritação com hábitos pequenos.",
+                        "A Adaptação: Eles criam regras de convivência silenciosas. A rotina forçada começa a se tornar surpreendentemente confortável.",
+                        "Invasão de Espaço: Um corredor estreito, uma cama só, ou curar um ferimento. O contato físico acidental aumenta a tensão.",
+                        "A Descoberta: Eles conversam de madrugada, no escuro, revelando segredos que jamais contariam em condições normais.",
+                        "A Escolha Final: Quando a proximidade forçada acaba, eles precisam decidir se vão se afastar ou se escolher por vontade própria."
+                    ]
+                },
+                secret: {
+                    title: "Desenvolvimento: Identidade Secreta",
+                    phases: [
+                        "A Ilusão Perfeita: Eles se conectam profundamente, mas baseados na máscara/identidade falsa de um deles.",
+                        "O Peso da Mentira: Quem guarda o segredo começa a sofrer de culpa, percebendo que está se apaixonando de verdade.",
+                        "As Pistas: Deslizes pequenos acontecem. O outro começa a juntar as peças do quebra-cabeça com desconfiança.",
+                        "A Revelação Dramática: O segredo é exposto da pior forma possível. O sentimento de traição deve ser esmagador.",
+                        "A Reconstrução: A jornada de perdão, provando que, embora a identidade fosse falsa, o amor sempre foi real."
+                    ]
+                },
+                rivals: {
+                    title: "Desenvolvimento: Rivais para Amantes",
+                    phases: [
+                        "A Competição: Tudo é um jogo. Eles estão sempre tentando superar um ao outro, motivados pelo ego e ambição.",
+                        "A Observação: Para vencer o rival, é preciso estudá-lo. Ao observar tanto o outro, eles acabam decorando seus menores detalhes.",
+                        "A Trégua Necessária: Um inimigo maior os obriga a lutar do mesmo lado. A química como equipe é inegável.",
+                        "A Tensão Desmascarada: O que antes era raiva competitiva se converte em desejo reprimido.",
+                        "A Vitória Mútua: Eles percebem que o maior prêmio não é vencer a competição, mas sim conquistar o parceiro."
+                    ]
+                }
+            };
+
+            function generatePrompt() {
+                const fandom = document.getElementById('fandom').value.trim() || 'Universo Original';
+                const charA = document.getElementById('charA').value.trim() || 'Personagem A';
+                const charB = document.getElementById('charB').value.trim() || 'Personagem B';
+                const tropeKey = document.getElementById('trope').value;
+                const trigger = document.getElementById('trigger').value.trim() || 'um evento inesperado muda o rumo de suas vidas.';
+                const vibe = document.getElementById('vibe').value;
+                const details = document.getElementById('details').value.trim();
+
+                const tropeLabels = {
+                    enemies: 'Inimigos para Amantes',
+                    friends: 'Amigos para Amantes',
+                    forced: 'Proximidade Forçada',
+                    secret: 'Identidade Secreta / Disfarce',
+                    rivals: 'Rivais para Amantes'
+                };
+
+                const vibeDescriptions = {
+                    slowburn: 'A progressão deve ser EXTREMAMENTE LENTA (slow burn). Não apresse os sentimentos, faça o leitor ansiar por cada interação.',
+                    angst: 'O tom deve ser melancólico, profundo e carregado de dor emocional. Foque nos medos internos e corações partidos.',
+                    fluff: 'A história deve ser aconchegante, doce e leve. Foque em momentos de conforto, sorrisos bobos e suporte mútuo.',
+                    dark: 'A atmosfera é perigosa, madura e sombria. A moralidade é cinza e os sentimentos são intensos, possessivos e arriscados.'
+                };
+
+                const phaseData = phaseMaps[tropeKey];
+                const phasesList = phaseData.phases.map((p, index) => `${index + 1}. ${p}`).join('\n');
+
+                let prompt = `**Contexto Inicial:**\n`;
+                prompt += `Atue como um escritor de fanfics profissional e experiente. Você vai escrever uma história ambientada no universo de **${fandom}**.\n`;
+                prompt += `Os protagonistas centrais são **${charA}** e **${charB}**.\n`;
+                prompt += `O tom e atmosfera da narrativa: ${vibeDescriptions[vibe]}\n\n`;
+
+                prompt += `**O Gancho da História:**\n`;
+                prompt += `Tudo começa com a seguinte premissa: ${trigger}\n`;
+                prompt += `A dinâmica entre eles deve seguir o clássico tropo de **${tropeLabels[tropeKey]}**, respeitando a personalidade canônica (canon) dos personagens.\n\n`;
+
+                prompt += `**${phaseData.title}:**\n`;
+                prompt += `Eu quero que você desenvolva a história organicamente passando por estas fases:\n${phasesList}\n\n`;
+
+                if (details) {
+                    prompt += `**Regras e Detalhes Específicos:**\n${details}\n\n`;
+                }
+
+                prompt += `**Estilo de Escrita:**\n`;
+                prompt += `- Use a regra "Show, don't tell" (Mostre, não conte). Em vez de dizer que estão tristes ou apaixonados, mostre isso através da linguagem corporal, respiração, olhares e ações.\n`;
+                prompt += `- Diálogos naturais e com subtexto (o que não é dito é tão importante quanto o que é dito).\n`;
+                prompt += `- Descreva os cenários e os sentidos (cheiros, temperaturas, texturas) para imersão total.\n\n`;
+
+                // NOVO: Regra de Paginação exigida pelo usuário
+                prompt += `**[COMANDO DE PAGINAÇÃO: MODO HISTÓRIA CONTÍNUA]**\n`;
+                prompt += `Sua resposta deve agir como um capítulo de um livro. Escreva uma parte substancial (como a Parte 1) e pare, deixando um pequeno suspense ou conclusão de cena.\n`;
+                prompt += `Sempre que eu responder no chat escrevendo apenas **"próxima página"**, você tem a OBRIGAÇÃO de continuar a escrever a história exatamente do ponto onde parou na resposta anterior.\n`;
+                prompt += `Não mude de assunto, não resuma o que passou e não me faça perguntas. Apenas continue narrando o próximo capítulo ou cena, mantendo a continuidade, o ritmo e o mesmo estilo descritivo até concluirmos a fanfic.\n\n`;
+                
+                prompt += `Se entendeu as regras, comece escrevendo a "Página 1" da nossa história agora!`;
+
+                return prompt;
+            }
+
+            function renderPrompt() {
+                let text = generatePrompt();
+                
+                // Conversão básica de Markdown para HTML
+                // Negritos normais
+                let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                // Títulos de Seção
+                html = html.replace(/<strong>(Contexto Inicial:|O Gancho da História:|Desenvolvimento:.*?|Regras e Detalhes Específicos:|Estilo de Escrita:)<\/strong>/g, '<span class="section-title">$1</span>');
+                
+                // Destaque Especial para a Regra de Paginação
+                html = html.replace(/<strong>(\[COMANDO DE PAGINAÇÃO: MODO HISTÓRIA CONTÍNUA\])<\/strong>/g, '<span class="section-title highlight">$1</span>');
+                
+                // Quebras de linha
+                html = html.replace(/\n/g, '<br>');
+
+                promptOutput.innerHTML = html;
+                outputWrapper.classList.add('active');
+                
+                // Scroll suave até o resultado
+                setTimeout(() => {
+                    outputWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+
+            generateBtn.addEventListener('click', renderPrompt);
+
+            copyBtn.addEventListener('click', function() {
+                const rawText = generatePrompt(); // Pega texto puro (sem HTML) para colar no ChatGPT/Claude
+                
+                // Tenta usar a API Moderna da Área de Transferência
+                navigator.clipboard.writeText(rawText).then(() => {
+                    setCopiedState();
+                }).catch(() => {
+                    // Fallback para navegadores antigos ou restrições de iframe
+                    const textarea = document.createElement('textarea');
+                    textarea.value = rawText;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        setCopiedState();
+                    } catch (err) {
+                        console.error('Erro ao copiar', err);
+                    }
+                    document.body.removeChild(textarea);
+                });
+            });
+
+            function setCopiedState() {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado com Sucesso!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('copied');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
