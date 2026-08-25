@@ -1,8 +1,6 @@
-// public/sw.js
 const CACHE_NAME = "rimufic-cache-v1";
 
-// O navegador exige que o Service Worker tenha pelo menos o evento 'fetch' para reconhecer como PWA.
-self.addEventListener("fetch", (event) => {
-  // Por enquanto, apenas deixamos a requisição passar normalmente.
-  // No futuro, podemos usar isso para fazer o app funcionar offline!
+// O evento install avisa que o PWA está pronto, sem gerar alertas de lentidão no fetch
+self.addEventListener("install", (event) => {
+  console.log("✨ Service Worker do Rimufic instalado e pronto para o futuro!");
 });
