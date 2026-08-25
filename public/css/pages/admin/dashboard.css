@@ -1,0 +1,98 @@
+/* public/css/pages/admin/dashboard.css */
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.metric-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.metric-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+/* Classes para as cores dos ícones (substitui o style="") */
+.icon-purple {
+  background: rgba(157, 78, 221, 0.15);
+  color: var(--accent);
+}
+
+.icon-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.metric-info h3 {
+  font-size: 2.2rem;
+  margin-bottom: 0;
+  line-height: 1;
+  color: var(--text-main);
+}
+
+.metric-info p {
+  color: var(--text-muted);
+  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* Substitui os styles inline da caixa da tabela */
+.dashboard-panel {
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.panel-title {
+  font-size: 1.3rem;
+  color: var(--accent);
+  font-family: 'Playfair Display', serif;
+}
+
+/* Ajustes para a tabela do dashboard */
+.text-highlight {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.table-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+/* Um botão menor para cabeçalhos */
+.btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}

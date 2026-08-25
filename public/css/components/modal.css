@@ -1,0 +1,124 @@
+/* public/css/components/modal.css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  background: var(--bg-main);
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  border-radius: 20px;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  z-index: 10;
+  background: transparent;
+  border: none;
+}
+
+.close-modal:hover {
+  color: var(--accent);
+}
+
+.modal-header {
+  padding: 2rem 2rem 1rem;
+  text-align: center;
+}
+
+.modal-header h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.modal-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.modal-body {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-footer {
+  padding: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: rgba(11, 7, 16, 0.4);
+  border-top: 1px solid var(--glass-border);
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .modal-overlay {
+    padding: 0 !important;
+  }
+
+  .modal-body {
+    padding: 1rem 15px;
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-footer {
+    padding: 5px !important;
+  }
+
+  .modal-footer button {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+}

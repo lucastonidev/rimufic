@@ -1,0 +1,13 @@
+:root {
+  --bg-main: #0B0710;
+  --bg-secondary: rgba(25, 15, 35, 0.7);
+  --text-main: #F0E6FA;
+  --text-muted: #A89CB8;
+  --accent: #9D4EDD;
+  --accent-hover: #B874EE;
+  --glass-bg: rgba(25, 15, 35, 0.45);
+  --glass-border: rgba(157, 78, 221, 0.15);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --card-hover-shadow: 0 15px 35px rgba(157, 78, 221, 0.2);
+  --danger: #ef4444;
+}

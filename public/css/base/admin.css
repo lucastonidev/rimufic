@@ -1,0 +1,66 @@
+/* public/css/pages/admin.css */
+
+/* 1. Importa os COMPONENTES reutilizáveis do Admin */
+@import url('../components/admin/layout.css');
+@import url('../components/admin/sidebar.css');
+@import url('../components/admin/tables.css');
+
+/* 2. Importa estilos específicos de PÁGINAS (se necessário carregar globalmente) */
+@import url('../pages/admin/dashboard.css');
+
+/* CSS Responsivo Geral do Admin */
+@media (max-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    height: auto;
+    padding: 1rem;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .sidebar-header {
+    margin-bottom: 0;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .sidebar-content {
+    display: none;
+    margin-top: 1.5rem;
+    animation: slideDown 0.3s ease;
+  }
+
+  .sidebar-content.active {
+    display: flex;
+  }
+    .section-title::after {
+      margin-bottom: 15px !important;
+    }
+
+  .admin-content {
+    padding: 1rem;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

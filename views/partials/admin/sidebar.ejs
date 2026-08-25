@@ -1,0 +1,61 @@
+<!-- views/partials/admin/sidebar.ejs -->
+<aside class="admin-sidebar">
+  <div class="sidebar-header">
+    <a href="/" class="brand">
+      <i class="ph ph-book-open-text"></i>
+      Rimufic
+    </a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <i class="ph ph-list"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-content" id="sidebarContent">
+    <nav class="sidebar-nav">
+      <!-- Links visíveis para todos que têm acesso ao painel -->
+      <a href="/admin" class="nav-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+        <i class="ph ph-squares-four"></i> Visão Geral
+      </a>
+      <a href="/admin/create-story" class="nav-item <%= activePage === 'create' ? 'active' : '' %>">
+        <i class="ph ph-pen-nib"></i> Adicionar Obra
+      </a>
+
+      <!-- LÓGICA EJS: Mostra "Usuários" APENAS se o usuário for admin -->
+      <% if (user && user.role==='admin' ) { %>
+        <a href="/admin/users" class="nav-item <%= activePage === 'users' ? 'active' : '' %>">
+          <i class="ph ph-users"></i> Usuários
+        </a>
+
+        <!-- NOVO BOTÃO AQUI -->
+        <a href="/admin/stories" class="nav-item <%= activePage === 'stories' ? 'active' : '' %>">
+          <i class="ph ph-books"></i> Gerenciar Obras
+        </a>
+        <% } %>
+
+          <a href="/" class="nav-item" style="margin-top: auto;">
+            <i class="ph ph-arrow-left"></i> Voltar ao Site
+          </a>
+
+          <!-- Botão de Sair (Chama a rota de logout que criamos no web.js) -->
+          <a href="/logout" class="nav-item" style="color: var(--danger);">
+            <i class="ph ph-sign-out"></i> Desconectar
+          </a>
+    </nav>
+
+    <!-- Perfil Dinâmico puxando os dados do banco -->
+    <div class="user-profile">
+      <div class="avatar">
+        <!-- Pega a primeira letra do nome ou 'U' se não tiver -->
+        <%= user && user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U' %>
+      </div>
+      <div>
+        <div style="font-size: 0.9rem; font-weight: 600;">
+          <%= user && user.full_name ? user.full_name : 'Usuário' %>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--accent); text-transform: capitalize;">
+          <%= user && user.role==='admin' ? 'Administrador' : 'Autor' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

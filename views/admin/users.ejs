@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <%- include('../partials/head') %>
+    <!-- CSS global do Admin -->
+    <link rel="stylesheet" href="/css/base/admin.css">
+    <!-- CSS específico da página de Usuários (Modais e Ações) -->
+    <link rel="stylesheet" href="/css/pages/admin/users.css">
+    <title>Gerenciar Usuários - Rimufic</title>
+</head>
+
+<body>
+
+  <div class="admin-layout">
+
+    <!-- Componente do Menu Lateral -->
+    <%- include('../partials/admin/sidebar', { activePage: 'users' }) %>
+
+      <!-- Conteúdo Principal -->
+      <main class="admin-content">
+
+        <div class="page-header">
+          <div>
+            <h1 class="section-title">Corte de Membros</h1>
+            <p class="section-desc">Gerencie leitores, autores e outros administradores do reino.</p>
+          </div>
+          <button class="btn-primary" onclick="openModal('modalAddUser')">
+            <i class="ph ph-user-plus"></i> Novo Membro
+          </button>
+        </div>
+
+        <div class="glass table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Papel</th>
+                <th>Data de Entrada</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (users && users.length> 0) { %>
+                <% users.forEach(membro=> { %>
+                  <tr>
+                    <td>
+                      <div class="user-info">
+                        <div class="avatar" style="background: var(--accent);">
+                          <%= membro.full_name ? membro.full_name.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                        <div class="user-info-text">
+                          <h4>
+                            <%= membro.full_name || 'Usuário Sem Nome' %>
+                          </h4>
+                          <!-- O Supabase armazena emails na auth, mas se você tiver na profiles, ele entra aqui -->
+                          <p>
+                            <%= membro.email || 'Email confidencial' %>
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+            
+                    <td>
+                      <% if (membro.role==='admin' ) { %>
+                        <span class="badge badge-admin">Admin</span>
+                        <% } else if (membro.role==='author' ) { %>
+                          <span class="badge badge-author">Autor</span>
+                          <% } else { %>
+                            <span class="badge badge-reader">Leitor</span>
+                            <% } %>
+                    </td>
+            
+                    <td style="color: var(--text-muted);">
+                      <%= membro.created_at ? new Date(membro.created_at).toLocaleDateString('pt-BR') : 'Desconhecida' %>
+                    </td>
+            
+                    <td><span style="color: var(--success);"><i class="ph-fill ph-check-circle"></i> Ativo</span></td>
+            
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn-action edit" onclick="window.openEditModal('<%= membro.id %>', '<%= membro.role %>')"
+                          title="Editar Permissões">
+                          <i class="ph ph-pencil-simple"></i>
+                        </button>
+                      
+                        <% if (membro.id !==user.id) { %>
+                          <button class="btn-action delete" onclick="window.openBanModal('<%= membro.id %>')" title="Banir Usuário">
+                            <i class="ph ph-prohibit"></i>
+                          </button>
+                          <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
+                          <i class="ph ph-ghost"
+                            style="font-size: 3rem; color: var(--glass-border); margin-bottom: 1rem; display: block;"></i>
+                          A corte está vazia.
+                        </td>
+                      </tr>
+                      <% } %>
+            </tbody>
+          </table>
+        </div>
+
+      </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAIS NATIVOS                             -->
+  <!-- ========================================== -->
+
+  <!-- Modal Adicionar Usuário -->
+  <div class="modal-overlay" id="modalAddUser">
+    <div class="modal-content glass">
+      <button class="close-modal" onclick="closeModal('modalAddUser')"><i class="ph ph-x"></i></button>
+      <div class="modal-header">
+        <h2>Adicionar Novo Membro</h2>
+        <p>Convide um novo usuário para o sistema.</p>
+      </div>
+      <form id="formAddUser" class="modal-body">
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="addName" class="form-control" placeholder="Ex: Lucas Silva" required>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="addEmail" class="form-control" placeholder="lucas@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Nível de Acesso</label>
+          <select class="form-control" id="addRole" required>
+            <option value="reader">Leitor</option>
+            <option value="author">Autor</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" onclick="closeModal('modalAddUser')">Cancelar</button>
+          <button type="submit" class="btn-primary">Enviar Convite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Editar Usuário -->
+  <div class="modal-overlay" id="modalEditUser">
+    <div class="modal-content glass">
+      <button class="close-modal" onclick="closeModal('modalEditUser')"><i class="ph ph-x"></i></button>
+      <div class="modal-header">
+        <h2>Editar Permissões</h2>
+        <p>Altere o acesso de Maria S. Santos.</p>
+      </div>
+      <form id="formEditUser" class="modal-body">
+        <div class="form-group">
+          <label>Nível de Acesso</label>
+          <select class="form-control" id="editRoleSelect">
+            <option value="reader">Leitor</option>
+            <option value="author" selected>Autor</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" onclick="closeModal('modalEditUser')">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Alterações</button>
+        </div>
+
+        <input type="hidden" id="editUserId">
+        <input type="hidden" id="currentRole">
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Banimento -->
+  <div class="modal-overlay" id="modalBanUser">
+    <div class="modal-content glass" style="border-color: rgba(239, 68, 68, 0.3);">
+      <button class="close-modal" onclick="closeModal('modalBanUser')"><i class="ph ph-x"></i></button>
+      <div class="modal-header">
+        <i class="ph ph-warning-octagon" style="font-size: 3rem; color: var(--danger); margin-bottom: 10px;"></i>
+        <h2>Banir Usuário</h2>
+        <p>Tem certeza que deseja banir este usuário? Ele perderá acesso imediato à plataforma.</p>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Motivo (Opcional)</label>
+          <textarea class="form-control" rows="3" placeholder="Descreva o motivo da punição..."></textarea>
+        </div>
+        <input type="hidden" id="banUserId">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-outline" onclick="closeModal('modalBanUser')">Cancelar</button>
+        <button type="button" class="btn-danger" onclick="submitBan()">Sim, Banir Usuário</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/pages/admin.js"></script>
+  <script src="/js/pages/users.js"></script>
+</body>
+
+</html>

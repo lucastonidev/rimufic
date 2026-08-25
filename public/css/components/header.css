@@ -1,0 +1,60 @@
+ header {
+   position: sticky;
+   top: 0;
+   z-index: 100;
+   padding: 1rem 0;
+   margin-bottom: 4rem;
+ }
+
+ .nav-container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 10px 20px;
+ }
+
+ .brand {
+   font-size: 1.8rem;
+   color: var(--accent);
+   display: flex;
+   align-items: center;
+   gap: 10px;
+ }
+
+ .brand i {
+   font-size: 2rem;
+ }
+
+ .nav-links {
+   display: flex;
+   gap: 2rem;
+   align-items: center;
+ }
+
+ .nav-link {
+   font-weight: 500;
+   position: relative;
+   padding: 5px 0;
+   transition: color 0.3s ease;
+ }
+
+ .nav-link:hover,
+ .nav-link.active {
+   color: var(--accent);
+ }
+
+ .nav-link::after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   width: 0%;
+   height: 2px;
+   background-color: var(--accent);
+   transition: width 0.3s ease;
+ }
+
+ .nav-link:hover::after,
+ .nav-link.active::after {
+   width: 100%;
+ }

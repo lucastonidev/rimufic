@@ -1,0 +1,161 @@
+/* public/css/components/card.css */
+
+.card-link {
+  display: contents;
+}
+
+/* Deixei a coluna um pouco mais fina para dar a proporção exata de poster */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* 1. O CARD: Define a proporção e esconde o que vazar */
+.story-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  aspect-ratio: 2/3;
+  /* Proporção clássica de cinema/livro */
+  background: var(--bg-main);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Efeito Hover Netflix: Levanta, dá zoom e ganha sombra forte */
+.story-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+  border-color: rgba(157, 78, 221, 0.6);
+  z-index: 10;
+}
+
+/* 2. A CAPA: Agora é o fundo absoluto do card */
+.card-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.story-card:hover .card-cover img {
+  transform: scale(1.1);
+  /* Zoom suave na imagem */
+}
+
+/* 3. GRADIENTE MÁGICO: Escurece as pontas para o texto ficar legível */
+.card-cover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom,
+      rgba(11, 7, 16, 0.6) 0%,
+      /* Sombra no topo para o Gênero */
+      transparent 30%,
+      transparent 50%,
+      rgba(11, 7, 16, 0.95) 100%
+      /* Sombra forte embaixo para o Título */
+    );
+  z-index: 2;
+}
+
+/* 4. ELEMENTOS DE TEXTO: Ficam acima da imagem e do gradiente */
+.card-title,
+.card-author,
+.card-footer {
+  position: relative;
+  z-index: 3;
+}
+
+/* Título empurrado para o fundo do card */
+.card-title {
+  margin-top: auto;
+  /* A mágica que empurra o texto pra baixo! */
+  font-size: 1.15rem;
+  padding: 0 1rem;
+  color: #ffffff;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.card-author {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.4rem 1rem 0;
+  margin-bottom: 0;
+}
+
+/* 5. O GÊNERO: Uma "Badge" (Etiqueta) no topo esquerdo */
+.card-genre {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  font-size: 0.65rem;
+  background-color: var(--accent);
+  padding: 4px 8px;
+  border-radius: 4px;
+  /* Mais quadrado para remeter ao ícone "N" da Netflix */
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* 6. O RODAPÉ: Apenas para segurar o botão de favorito na base direita */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5rem 1rem 1rem;
+  border-top: none;
+  background: transparent;
+}
+
+/* Botão de favorito adaptado para ficar bem sobre a imagem */
+.btn-fav {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  width: 32px;
+  height: 32px;
+}
+
+.btn-fav:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--danger);
+}
+
+/* Mensagem de Estado Vazio */
+.empty-grid-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 4rem;
+}
+
+.empty-grid-msg i {
+  font-size: 3rem;
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 1rem;
+}

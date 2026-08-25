@@ -1,0 +1,118 @@
+<!-- views/admin/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/base/admin.css">
+    <title>Dashboard - Rimufic Admin</title>
+</head>
+
+<body>
+
+  <div class="admin-layout">
+    <%- include('../partials/admin/sidebar', { activePage: 'dashboard' }) %>
+
+      <main class="admin-content">
+
+        <div class="page-header">
+          <div>
+            <h1 class="section-title">O Olho Que Tudo Vê</h1>
+            <p class="section-desc">Monitore os acessos, o engajamento e a segurança do seu grimório.</p>
+          </div>
+        </div>
+
+        <!-- Grid de Métricas Principais -->
+        <div class="metrics-grid">
+
+          <!-- Card de Obras -->
+          <div class="metric-card glass">
+            <div class="metric-icon icon-purple">
+              <i class="ph-fill ph-books"></i>
+            </div>
+            <div class="metric-info">
+              <h3>
+                <%= stats.totalStories %>
+              </h3>
+              <p>Obras no Acervo</p>
+            </div>
+          </div>
+
+          <!-- Card de Membros -->
+          <div class="metric-card glass">
+            <div class="metric-icon icon-green">
+              <i class="ph-fill ph-users"></i>
+            </div>
+            <div class="metric-info">
+              <h3>
+                <%= stats.totalUsers %>
+              </h3>
+              <p>Membros da Corte</p>
+            </div>
+          </div>
+
+          <!-- Card de Leituras -->
+          <div class="metric-card glass">
+            <div class="metric-icon icon-blue">
+              <i class="ph-fill ph-eye"></i>
+            </div>
+            <div class="metric-info">
+              <h3>12.4k</h3>
+              <p>Visualizações Totais</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tabelas de Informação Rápida -->
+        <div class="dashboard-panels">
+          <div class="glass dashboard-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Últimas Lendas Adicionadas</h2>
+              <a href="/admin/stories" class="btn-outline btn-sm">Ver Acervo Completo</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Título da Obra</th>
+                    <th>Autor</th>
+                    <th>Adicionada Em</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (stats.recentStories && stats.recentStories.length> 0) { %>
+                    <% stats.recentStories.forEach(story=> { %>
+                      <tr>
+                        <td class="text-highlight">
+                          <%= story.title %>
+                        </td>
+                        <td class="text-muted">
+                          <%= story.author %>
+                        </td>
+                        <td class="text-muted">
+                          <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="3" class="table-empty">
+                              O grimório ainda não tem nenhuma lenda escrita.
+                            </td>
+                          </tr>
+                          <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+  </div>
+
+  <script src="/js/pages/admin.js"></script>
+</body>
+
+</html>

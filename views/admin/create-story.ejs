@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <%- include('../partials/head') %>
+    <!-- CSS global do Admin -->
+    <link rel="stylesheet" href="/css/base/admin.css">
+    <link rel="stylesheet" href="/css/pages/admin/create-story.css">
+    <title>Adicionar Obra - Rimufic</title>
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <!-- Componente do Menu Lateral -->
+    <%- include('../partials/admin/sidebar') %>
+
+      <!-- Tivemos que ajustar o main para não conflitar com o padding padrão do admin.css -->
+      <main class="create-story-main">
+
+        <header class="page-header sticky-header">
+          <!-- Título Dinâmico -->
+          <h1 class="page-title">
+            <%= locals.story ? 'Editar Obra' : 'Nova Obra' %>
+          </h1>
+
+          <div class="header-actions">
+            <!-- Campo oculto com o ID (Vazio se for criação) -->
+            <input type="hidden" id="storyId" value="<%= locals.story ? story.id : '' %>">
+
+            <button class="btn-outline">Salvar Rascunho</button>
+            <button class="btn-primary" id="btnPublish">
+              <i class="ph ph-paper-plane-tilt"></i>
+              <%= locals.story ? 'Atualizar' : 'Publicar' %>
+            </button>
+          </div>
+        </header>
+
+        <div class="tabs-container">
+
+          <!-- Navegação das Abas -->
+          <nav class="tabs-nav">
+            <button class="tab-btn active" id="btnTabInfo" onclick="switchTab('tabInfo', this)">
+              <i class="ph ph-info"></i> 1. Informações da Obra
+            </button>
+            <button class="tab-btn" id="btnTabEditor" onclick="switchTab('tabEditor', this)">
+              <i class="ph ph-pen-nib"></i> 2. Escrever História
+            </button>
+          </nav>
+
+          <div class="tab-content">
+            <!-- ABA 1: Informações e Metadados -->
+            <div id="tabInfo" class="tab-pane active glass">
+              <div class="metadata-panel">
+            
+                <div class="form-group">
+                  <label>Capa da Obra</label>
+            
+                  <!-- Controles para escolher o método -->
+                  <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text-main);">
+                      <input type="radio" name="coverToggle" value="upload" checked onclick="toggleCoverMode('upload')"
+                        style="accent-color: var(--accent);"> Enviar Arquivo Local
+                    </label>
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text-main);">
+                      <input type="radio" name="coverToggle" value="url" onclick="toggleCoverMode('url')"
+                        style="accent-color: var(--accent);"> Usar Link (URL)
+                    </label>
+                  </div>
+            
+                  <!-- SEÇÃO 1: UPLOAD (Padrão) -->
+                  <div id="modeUpload">
+                    <div class="cover-upload" id="coverUploadBox" onclick="document.getElementById('coverInput').click()"
+                      style="color: <%= locals.story && story.cover_url ? 'transparent' : '' %>">
+            
+                      <i class="ph ph-image"
+                        style="font-size: 2.5rem; opacity: <%= locals.story && story.cover_url ? '0' : '1' %>;"></i>
+                      <span style="opacity: <%= locals.story && story.cover_url ? '0' : '1' %>;">Clique para adicionar
+                        arquivo (JPG/PNG)</span>
+            
+                      <img id="coverPreview" src="<%= locals.story ? story.cover_url : '' %>" alt="Pré-visualização da Capa"
+                        style="display: <%= locals.story && story.cover_url ? 'block' : 'none' %>;">
+                    </div>
+                    <input type="file" id="coverInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                  </div>
+            
+                  <!-- SEÇÃO 2: LINK EXTERNO (Escondido por padrão) -->
+                  <div id="modeUrl" style="display: none;">
+                    <input type="url" id="coverUrl" class="form-control" placeholder="https://exemplo.com/imagem.png"
+                      value="<%= locals.story ? story.cover_url : '' %>" oninput="previewImageUrl(this.value)">
+            
+                    <!-- Caixinha menor apenas para mostrar o preview da URL gerada -->
+                    <div class="cover-upload"
+                      style="margin-top: 15px; cursor: default; border: 1px dashed var(--glass-border); background: transparent;">
+                      <img id="urlPreviewImg" src="<%= locals.story ? story.cover_url : '' %>"
+                        style="display: <%= locals.story && story.cover_url ? 'block' : 'none' %>; width: 100%; height: 100%; object-fit: cover;">
+                      <span id="urlPlaceholderText"
+                        style="display: <%= locals.story && story.cover_url ? 'none' : 'block' %>; font-size: 0.85rem;">Preview do
+                        link
+                        aparecerá aqui</span>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- OS CAMPOS QUE HAVIAM SUMIDO ESTÃO DE VOLTA AQUI -->
+                <div class="form-group">
+                  <label for="title">Título</label>
+                  <input type="text" id="title" class="form-control" placeholder="A Lenda de..." required
+                    value="<%= locals.story ? story.title : '' %>">
+                </div>
+            
+                <div class="form-group">
+                  <label for="author">Autor (Pseudônimo)</label>
+                  <input type="text" id="author" class="form-control" required
+                    value="<%= locals.story ? story.author : 'Grão-Mestre' %>">
+                </div>
+            
+                <div class="form-group">
+                  <label for="genre">Gênero Principal</label>
+                  <select id="genre" class="form-control">
+                    <% const currentGenre=locals.story ? story.genre : 'folclore' ; %>
+                      <option value="folclore" <%=currentGenre==='folclore' ? 'selected' : '' %>>Folclore Brasileiro</option>
+                      <option value="fabula" <%=currentGenre==='fabula' ? 'selected' : '' %>>Fábulas & Contos</option>
+                      <option value="fantasia" <%=currentGenre==='fantasia' ? 'selected' : '' %>>Fantasia Alta</option>
+                      <option value="mitologia" <%=currentGenre==='mitologia' ? 'selected' : '' %>>Mitologia</option>
+                      <option value="terror" <%=currentGenre==='terror' ? 'selected' : '' %>>Terror Místico</option>
+                  </select>
+                </div>
+            
+                <div class="form-group" style="flex-grow: 1;">
+                  <label for="synopsis">Sinopse Curta</label>
+                  <textarea id="synopsis" class="form-control" style="height: 100%; min-height: 150px; resize: none;"
+                    placeholder="Instigue o leitor..."><%= locals.story ? story.synopsis : '' %></textarea>
+                </div>
+            
+                <button class="btn-primary" style="align-self: flex-end; margin-top: 1rem;"
+                  onclick="switchTab('tabEditor', document.getElementById('btnTabEditor'))">
+                  Continuar para o Editor <i class="ph ph-arrow-right"></i>
+                </button>
+            
+              </div>
+            </div>
+
+            <!-- ABA 2: Editor -->
+            <div id="tabEditor" class="tab-pane">
+              <section class="editor-panel">
+                <div class="editor-toolbar">
+                  <button class="editor-btn" onclick="execCmd('bold')" title="Negrito"><i
+                      class="ph ph-text-b"></i></button>
+                  <button class="editor-btn" onclick="execCmd('italic')" title="Itálico"><i
+                      class="ph ph-text-italic"></i></button>
+                  <button class="editor-btn" onclick="execCmd('underline')" title="Sublinhado"><i
+                      class="ph ph-text-underline"></i></button>
+                  <div class="toolbar-divider"></div>
+                  <button class="editor-btn" onclick="execCmd('justifyLeft')" title="Alinhar à Esquerda"><i
+                      class="ph ph-text-align-left"></i></button>
+                  <button class="editor-btn" onclick="execCmd('justifyCenter')" title="Centralizar"><i
+                      class="ph ph-text-align-center"></i></button>
+                  <button class="editor-btn" onclick="execCmd('justifyFull')" title="Justificar"><i
+                      class="ph ph-text-align-justify"></i></button>
+                  <div class="toolbar-divider"></div>
+                  <button class="editor-btn" onclick="execCmd('insertUnorderedList')" title="Lista"><i
+                      class="ph ph-list-bullets"></i></button>
+                  <button class="btn-template" onclick="loadTemplate()" title="Preencher com um modelo de exemplo">
+                    <i class="ph ph-magic-wand"></i> <span>Usar Modelo de Escrita</span>
+                  </button>
+                </div>
+
+                <!-- ContentEditable Area -->
+                <div id="editorArea" class="editor-content" contenteditable="true" spellcheck="false" placeholder="Era uma vez..."><%-
+                    locals.rawContent ? rawContent.replace(/\n/g, '<br>' ) : '' %></div>
+              </section>
+            </div>
+
+          </div>
+        </div>
+      </main>
+  </div>
+
+  <!-- Scripts globais do Admin e específicos da página -->
+  <script src="/js/pages/admin.js"></script>
+  <script src="/js/pages/create-story.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <%- include('partials/head') %>
+        <link rel="stylesheet" href="/css/pages/library.css">
+        <title>Meus Favoritos - Rimufic</title>
+</head>
+
+<body>
+
+    <%- include('partials/header') %>
+
+        <main class="container">
+            <div class="page-header">
+                <div>
+                    <h1>Sua Biblioteca Mágica</h1>
+                    <p style="color: var(--text-muted);">As histórias e lendas que marcaram o seu coração.</p>
+                </div>
+                <div class="stats-badge" id="statsBadge">
+                    <i class="ph-fill ph-books"></i>
+                    <span>0 Obras Salvas</span>
+                </div>
+            </div>
+        
+            <!-- O JavaScript vai injetar os cards aqui dentro -->
+            <div class="story-grid" id="favoritesGrid"></div>
+        
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="ph ph-ghost"></i>
+                <h2>Sua biblioteca está vazia...</h2>
+                <p>Parece que você ainda não encontrou nenhuma lenda para guardar. Explore o acervo e favorite suas histórias
+                    preferidas!</p>
+                <a href="/search" class="btn-primary" style="width: fit-content; margin: 0 auto;">
+                    <i class="ph ph-magnifying-glass"></i> Explorar Acervo
+                </a>
+            </div>
+        </main>
+
+        <script src="/js/components/favorites.js"></script>
+        <script src="/js/main.js"></script>
+</body>
+
+</html>

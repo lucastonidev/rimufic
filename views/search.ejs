@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/pages/search.css">
+    <title>Rimufic - Busca Avançada</title>
+</head>
+
+<body>
+
+  <%- include('partials/header') %>
+
+    <main class="container">
+      <div class="hero">
+        <h1>Histórias que ganham vida</h1>
+        <p>Explore um universo de fábulas, fanfics e contos mágicos. Um refúgio para leitores e escritores que buscam
+          magia
+          em cada palavra.</p>
+        <form action="/search" method="GET" class="search-quick">
+          <input type="text" name="q" class="search-input" placeholder="Qual história você procura hoje?"
+            value="<%= locals.query && query.q ? query.q : '' %>">
+          <button type="submit">
+            <i class="ph ph-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+      <div class="search-layout">
+        <aside class="filters-sidebar glass">
+          <form action="/search" method="GET">
+            <!-- Preserva o que o usuário digitou na busca caso ele clique apenas nos filtros -->
+            <% if (locals.query && query.q) { %>
+              <input type="hidden" name="q" value="<%= query.q %>">
+              <% } %>
+        
+                <div class="filter-group">
+                  <h3><i class="ph ph-sort-ascending"></i> Ordenação</h3>
+                  <label class="filter-option">
+                    <input type="radio" name="sort" value="recentes" <%=(!locals.query || query.sort !=='az' ) ? 'checked' : ''
+                      %>> Mais Recentes
+                  </label>
+                  <label class="filter-option">
+                    <input type="radio" name="sort" value="az" <%=(locals.query && query.sort==='az' ) ? 'checked' : '' %>>
+                    Ordem Alfabética (A-Z)
+                  </label>
+                </div>
+        
+                <div class="filter-group">
+                  <h3><i class="ph ph-mask-happy"></i> Gêneros</h3>
+                  <% const genres=locals.query && query.genre ? (Array.isArray(query.genre) ? query.genre : [query.genre]) : [];
+                    %>
+                    <label class="filter-option">
+                      <input type="checkbox" name="genre" value="folclore" <%=genres.includes('folclore') ? 'checked' : '' %>>
+                      Folclore Brasileiro
+                    </label>
+                    <label class="filter-option">
+                      <input type="checkbox" name="genre" value="fabula" <%=genres.includes('fabula') ? 'checked' : '' %>>
+                      Fábulas & Contos
+                    </label>
+                    <label class="filter-option">
+                      <input type="checkbox" name="genre" value="fantasia" <%=genres.includes('fantasia') ? 'checked' : '' %>>
+                      Fantasia Alta
+                    </label>
+                    <label class="filter-option">
+                      <input type="checkbox" name="genre" value="mitologia" <%=genres.includes('mitologia') ? 'checked' : '' %>>
+                      Mitologia
+                    </label>
+                    <label class="filter-option">
+                      <input type="checkbox" name="genre" value="terror" <%=genres.includes('terror') ? 'checked' : '' %>>
+                      Terror Místico
+                    </label>
+                </div>
+        
+                <button type="submit" class="btn-filter-action">
+                  Aplicar Filtros
+                </button>
+          </form>
+        </aside>
+
+        <!-- Resultados da Busca (Mockup de Cards Fixos no HTML) -->
+        <div class="search-results">
+          <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+            Mostrando <%= stories.length %> resultado(s) para sua busca.
+          </p>
+        
+          <div class="story-grid">
+            <% if (stories && stories.length> 0) { %>
+              <% stories.forEach(story=> { %>
+                <article class="story-card glass">
+                  <a href="/read/<%= story.id %>" class="card-link">
+                    <div class="card-cover">
+                      <% if (story.cover_url) { %>
+                        <img src="<%= story.cover_url %>" alt="Capa da história <%= story.title %>">
+                        <% } else { %>
+                          <img src="/assets/banner-magic.jpeg" alt="Capa Padrão">
+                          <% } %>
+                    </div>
+                    <h3 class="card-title">
+                      <%= story.title %>
+                    </h3>
+                    <p class="card-author">por <%= story.author %>
+                    </p>
+                  </a>
+          
+                  <div class="card-footer">
+                    <span class="card-genre">
+                      <%= story.genre %>
+                    </span>
+                    <button class="btn-fav" data-id="<%= story.id %>" data-title="<%= story.title %>"
+                      data-author="<%= story.author %>" data-cover="<%= story.cover_url || '' %>" data-genre="<%= story.genre %>"
+                      onclick="toggleFav(this)" title="Adicionar aos favoritos">
+                      <i class="ph ph-heart"></i>
+                    </button>
+                  </div>
+                </article>
+                <% }) %>
+                  <% } else { %>
+                    <div class="empty-grid-msg">
+                      <i class="ph ph-magnifying-glass"></i>
+                      Nenhuma lenda encontrada com esses filtros.
+                    </div>
+                    <% } %>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <script src="/js/components/favorites.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

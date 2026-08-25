@@ -1,0 +1,29 @@
+@import url('./components/card.css');
+@import url('./responsive/responsive.css');
+
+/* Gêneros Populares */
+.genres-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.genre-tag {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.genre-tag:hover,
+.genre-tag.active {
+  background: var(--accent);
+  color: var(--bg-main);
+  border-color: var(--accent);
+}

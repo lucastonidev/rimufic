@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/base/admin.css">
+    <link rel="stylesheet" href="/css/pages/users.css"> <!-- Aproveitamos os botões redondos de ação! -->
+    <title>Gerenciar Obras - Rimufic</title>
+    <style>
+      .action-btns {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        padding: 4px 6px;
+        font-size: 1.5rem;
+        border: 2px solid #ffff;
+      }
+
+      .btn-action.edit:hover{
+        color: #00A8FF;
+        border-color: #00A8FF;
+      }
+      .btn-action.delete:hover{
+        color: red;
+        border-color: red;
+      }
+    </style>
+</head>
+
+<body>
+  <div class="admin-layout">
+    <%- include('../partials/admin/sidebar', { activePage: 'stories' }) %>
+
+      <main class="admin-content">
+        <div class="page-header">
+          <div>
+            <h1 class="section-title">Acervo do Grimório</h1>
+            <p class="section-desc">Gerencie, edite ou apague as lendas já publicadas.</p>
+          </div>
+          <a href="/admin/create-story" class="btn-primary">
+            <i class="ph ph-plus"></i> Nova Obra
+          </a>
+        </div>
+
+        <div class="glass table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Obra</th>
+                <th>Gênero</th>
+                <th>Publicada em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <% if (stories && stories.length> 0) { %>
+                <% stories.forEach(story=> { %>
+                  <tr>
+                    <td>
+                      <div class="user-info">
+                        <!-- Miniatura da capa -->
+                        <img src="<%= story.cover_url || '/assets/banner-magic.jpeg' %>" alt="Capa"
+                          style="width: 45px; height: 65px; object-fit: cover; border-radius: 6px; border: 1px solid var(--glass-border);">
+
+                        <div class="user-info-text">
+                          <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--accent);">
+                            <%= story.title %>
+                          </h4>
+                          <p>por <%= story.author %>
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td><span class="badge badge-admin" style="text-transform: capitalize;">
+                        <%= story.genre %>
+                      </span></td>
+
+                    <td style="color: var(--text-muted);">
+                      <!-- Formata a data para o padrão Brasileiro -->
+                      <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
+                    </td>
+
+                    <td>
+                      <div class="action-btns">
+
+                        <!-- O botão de Editar virou um link (ancora) que vai levar para a futura página de edição -->
+                        <a href="/admin/stories/edit/<%= story.id %>" class="btn-action edit" title="Editar Obra">
+                          <i class="ph ph-pencil-simple"></i>
+                        </a>
+
+                        <!-- O botão de Deletar agora chama uma função JavaScript passando o ID -->
+                        <button class="btn-action delete" title="Apagar Obra" onclick="apagarObra('<%= story.id %>')">
+                          <i class="ph ph-trash"></i>
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 4rem 1rem;">
+                          <i class="ph ph-ghost"
+                            style="font-size: 3rem; color: var(--glass-border); margin-bottom: 1rem; display: block;"></i>
+                          Nenhuma obra encontrada no seu grimório.
+                        </td>
+                      </tr>
+                      <% } %>
+
+            </tbody>
+          </table>
+        </div>
+      </main>
+  </div>
+
+  <script src="/js/pages/admin.js"></script>
+  <script>
+    async function apagarObra(id) {
+      // Alerta de confirmação nativo do navegador
+      const confirmacao = confirm("Tem certeza que deseja apagar esta lenda? Ela desaparecerá do acervo.");
+
+      if (confirmacao) {
+        try {
+          const response = await fetch(`/admin/stories/${id}`, {
+            method: 'DELETE'
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            alert("Obra apagada com sucesso!");
+            window.location.reload(); // Recarrega a página para atualizar a tabela
+          } else {
+            alert("Erro: " + (result.message || "Não foi possível apagar."));
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erro de conexão com o servidor.");
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

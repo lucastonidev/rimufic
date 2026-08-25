@@ -1,0 +1,309 @@
+:root {
+  /* Roxo Místico Theme */
+  --bg-main: #0B0710;
+  --bg-secondary: rgba(25, 15, 35, 0.7);
+  --bg-reading: #120C18;
+  /* Fundo levemente diferente para a área de leitura */
+  --text-main: #F0E6FA;
+  --text-reading: #E2D6F5;
+  /* Cor um pouco mais suave para leitura prolongada */
+  --text-muted: #A89CB8;
+  --accent: #9D4EDD;
+  --accent-hover: #B874EE;
+  --glass-bg: rgba(25, 15, 35, 0.45);
+  --glass-border: rgba(157, 78, 221, 0.15);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.brand {
+  font-size: 1.8rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-icon:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.story-hero {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-main) 100%);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito de brilho mágico atrás do hero */
+.story-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 70% 30%, rgba(157, 78, 221, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.story-cover-large {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 16px;
+  background: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  border: 1px solid var(--accent);
+  box-shadow: 0 10px 30px rgba(157, 78, 221, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.story-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.story-info h1 {
+  font-size: 2.5rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.story-author {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.story-author span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.story-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.tag {
+  font-size: 0.8rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(157, 78, 221, 0.1);
+  border: 1px solid var(--accent);
+  color: var(--text-main);
+}
+
+.story-stats {
+  display: flex;
+  gap: 20px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reading-wrapper {
+  background-color: var(--bg-reading);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  padding: 4rem 2rem;
+  margin-bottom: 4rem;
+  box-shadow: var(--shadow);
+}
+
+.reading-tools {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed var(--glass-border);
+}
+
+.reading-content {
+  max-width: 750px;
+  /* Largura ideal para leitura de livros */
+  margin: 0 auto;
+  font-family: 'Lora', serif;
+  /* Fonte serifada para o texto, imita livros físicos */
+  font-size: 1.25rem;
+  /* Tamanho confortável */
+  line-height: 1.8;
+  color: var(--text-reading);
+}
+
+.chapter-title {
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  color: var(--accent);
+}
+
+.reading-content p {
+  margin-bottom: 1.5rem;
+  text-indent: 2rem;
+  /* Parágrafo com recuo */
+}
+
+.reading-content p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.2em;
+  /* <-- MUDOU DE 4.5rem PARA 3.2em (Relativo ao texto!) */
+  line-height: 0.8;
+  /* <-- Ajustado para não empurrar a linha de baixo */
+  font-family: 'Playfair Display', serif;
+  color: var(--accent);
+  padding-right: 8px;
+  padding-top: 4px;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(157, 78, 221, 0.4);
+}
+
+/* Marcador visual para quebra de tempo na história */
+.scene-break {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin: 3rem 0;
+  letter-spacing: 15px;
+}
+
+.reading-footer {
+  max-width: 750px;
+  margin: 4rem auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.btn-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  transition: all 0.3s;
+}
+
+.btn-nav:hover {
+  background-color: var(--accent);
+  color: var(--bg-main);
+  border-color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  header{
+    margin-bottom: 15px !important;
+  }
+  main {
+    margin: 0px !important;
+    padding: 0px !important;
+  }
+
+  .story-hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .story-cover-large {
+    width: 150px;
+    margin: 0 auto;
+  }
+
+  .story-tags {
+    justify-content: center;
+  }
+
+  .story-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .reading-wrapper {
+    padding: 2rem 1rem;
+  }
+
+  .reading-content {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .story-hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .story-cover-large {
+    width: 150px;
+    margin: 0 auto;
+  }
+
+  .story-tags {
+    justify-content: center;
+  }
+
+  .story-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .reading-wrapper {
+    padding: 2rem 1rem;
+  }
+
+  .reading-content {
+    font-size: 1.1rem;
+  }
+
+  /* NOVO: Ajuste proporcional da letra capitular no celular */
+  .reading-content p:first-of-type::first-letter {
+    font-size: 2.8em;
+    padding-right: 5px;
+  }
+}

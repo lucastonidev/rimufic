@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <%- include('partials/head') %>
+        <link rel="stylesheet" href="/css/style.css">
+        <title>Rimufic - Caderno de Histórias Mágico</title>
+</head>
+
+<body>
+    <%- include('partials/header') %>
+
+        <main class="container">
+            <section id="home" class="page-section active">
+                <div class="hero">
+                    <h1>Histórias que ganham vida</h1>
+                    <p>Explore um universo de fábulas, fanfics e contos mágicos. Um refúgio para leitores e escritores
+                        que
+                        buscam magia em cada palavra.</p>
+                    <div class="search-quick">
+                        <input type="text" id="quickSearchInput" class="search-input"
+                            placeholder="Qual história você procura hoje?" onkeypress="handleQuickSearch(event)">
+                        <button>
+                            <i class="ph ph-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Gêneros Populares</h2>
+                <div class="genres-list" id="homeGenresList">
+                    <a href="/search?genre=folclore" class="genre-tag">Folclore Brasileiro</a>
+                    <a href="/search?genre=fabula" class="genre-tag">Fábulas</a>
+                    <a href="/search?genre=fantasia" class="genre-tag">Fantasia Alta</a>
+                    <a href="/search?genre=mitologia" class="genre-tag">Mitologia</a>
+                    <a href="/search?genre=terror" class="genre-tag">Terror Místico</a>
+                </div>
+
+                <br><br>
+
+                <h2 class="section-title">Em Destaque</h2>
+                <div class="story-grid" id="homeStoriesGrid">
+                    <% if (stories && stories.length> 0) { %>
+                        <% stories.forEach(story=> { %>
+                            <article class="story-card glass">
+                
+                                <!-- Substituímos o style="display: contents" pela classe -->
+                                <a href="/read/<%= story.id %>" class="card-link">
+                                    <div class="card-cover">
+                                        <% if (story.cover_url) { %>
+                                            <img src="<%= story.cover_url %>" alt="Capa da história <%= story.title %>">
+                                            <% } else { %>
+                                                <img src="/assets/banner-magic.jpeg" alt="Capa Padrão">
+                                                <% } %>
+                                    </div>
+                
+                                    <h3 class="card-title">
+                                        <%= story.title %>
+                                    </h3>
+                                    <p class="card-author">por <%= story.author %>
+                                    </p>
+                                </a>
+                
+                                <div class="card-footer">
+                                    <!-- Substituímos o style="text-transform: capitalize" -->
+                                    <span class="card-genre">
+                                        <%= story.genre %>
+                                    </span>
+                                    <button class="btn-fav" data-id="<%= story.id %>" data-title="<%= story.title %>"
+                                        data-author="<%= story.author %>" data-cover="<%= story.cover_url || '' %>"
+                                        data-genre="<%= story.genre %>" onclick="toggleFav(this)" title="Adicionar aos favoritos">
+                                        <i class="ph ph-heart"></i>
+                                    </button>
+                                </div>
+                            </article>
+                            <% }) %>
+                                <% } else { %>
+                                    <!-- Limpamos toda aquela poluição de styles aqui usando a classe nova -->
+                                    <div class="empty-grid-msg">
+                                        <i class="ph ph-books"></i>
+                                        O grimório ainda está em branco. Nenhuma obra foi publicada.
+                                    </div>
+                                    <% } %>
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/components/favorites.js"></script>
+        <script src="/js/main.js"></script>
+</body>
+
+</html>

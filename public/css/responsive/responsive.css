@@ -1,0 +1,96 @@
+/* Estilo base do botão de menu mobile (escondido no PC) */
+.mobile-menu-btn {
+  display: none;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Responsividade Tablet */
+@media (max-width: 900px) {
+  .search-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+  }
+
+  .filter-group {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0;
+  }
+}
+
+/* Responsividade Mobile (Celular) */
+@media (max-width: 768px) {
+
+  /* Exibe o botão do menu */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Estiliza a caixa do menu suspenso */
+  .nav-links {
+    display: none;
+    /* Escondido por padrão, o JS vai adicionar a classe .show */
+    position: absolute;
+    top: calc(100% + 15px);
+    /* Dá um respiro entre o header e a caixa do menu */
+    left: 20px;
+    right: 20px;
+    flex-direction: column;
+    background: rgba(11, 7, 16, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 2rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    gap: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  /* Classe ativada pelo JavaScript */
+  .nav-links.show {
+    display: flex;
+    animation: slideDownMenu 0.3s ease forwards;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .story-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+/* Animação suave para o menu abrindo */
+@keyframes slideDownMenu {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <%- include('partials/head') %>
+        <link rel="stylesheet" href="../css/pages/read.css">
+        <title>Lendo: A Fúria do Boitatá - Rimufic</title>
+</head>
+
+<body>
+
+    <%- include('partials/header') %>
+
+        <main class="container">
+        
+            <section class="story-hero">
+                <div class="story-cover-large"
+                    style="<%= story.cover_url ? 'background-image: url(' + story.cover_url + '); background-size: cover; background-position: center;' : '' %>">
+                    <%= !story.cover_url ? '📖' : '' %>
+                </div>
+        
+                <div class="story-info">
+                    <h1>
+                        <%= story.title %>
+                    </h1>
+                    <p class="story-author">Escrito por <span>
+                            <%= story.author %>
+                        </span></p>
+        
+                    <div class="story-tags">
+                        <span class="tag" style="text-transform: capitalize;">
+                            <%= story.genre %>
+                        </span>
+                    </div>
+        
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
+                        <%= story.synopsis || 'Sem sinopse disponível.' %>
+                    </p>
+        
+                    <div class="story-stats">
+                        <div class="stat-item" title="Tempo de Leitura">
+                            <i class="ph ph-clock"></i> ~<%= readingTime %> min
+                        </div>
+                        <div class="stat-item" title="Data de Publicação">
+                            <i class="ph ph-calendar"></i>
+                            <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        
+            <section class="reading-wrapper">
+        
+                <div class="reading-tools">
+                    <!-- Botão Diminuir Fonte -->
+                    <button class="btn-icon" onclick="changeFontSize(-0.15)" title="Diminuir Fonte">
+                        <i class="ph ph-minus"></i>
+                    </button>
+                
+                    <!-- Botão Aumentar Fonte -->
+                    <button class="btn-icon" onclick="changeFontSize(0.15)" title="Aumentar Fonte">
+                        <i class="ph ph-plus"></i>
+                    </button>
+                
+                    <div style="width: 1px; background: var(--glass-border); margin: 0 10px;"></div>
+                
+                    <!-- Botão Favoritar conectado ao favorites.js -->
+                    <button class="btn-fav" data-id="<%= story.id %>" data-title="<%= story.title %>" data-author="<%= story.author %>"
+                        data-cover="<%= story.cover_url || '' %>" data-genre="<%= story.genre %>" onclick="toggleFav(this)"
+                        title="Favoritar Lenda" style="width: 40px; height: 40px; font-size: 1.4rem;">
+                        <i class="ph ph-heart"></i>
+                    </button>
+                </div>
+        
+                <article class="reading-content">
+                    <!-- A MÁGICA ACONTECE AQUI: Injetamos o HTML convertido direto na tela! -->
+                    <%- htmlContent %>
+                </article>
+        
+                <div class="reading-footer">
+                    <a href="/" class="btn-nav">
+                        <i class="ph ph-caret-left"></i> Voltar ao Grimório
+                    </a>
+                    <div style="font-size: 0.9rem; color: var(--text-muted);">
+                        Fim do Conto
+                    </div>
+                    <button class="btn-nav" disabled>
+                        Deixe um Comentário <i class="ph ph-chat-teardrop-text"></i>
+                    </button>
+                </div>
+        
+            </section>
+        </main>
+
+        <script src="/js/components/favorites.js"></script>
+        <script src="/js/main.js"></script>
+        <script>
+            // Lógica de Zoom na Fonte
+            const readingContent = document.querySelector('.reading-content');
+            let currentFontSize = 1.25; // O valor base que você definiu no read.css (1.25rem)
+
+            function changeFontSize(step) {
+                currentFontSize += step;
+
+                // Travas de segurança para impedir que a fonte fique minúscula ou gigante
+                if (currentFontSize < 0.9) currentFontSize = 0.9;
+                if (currentFontSize > 2.5) currentFontSize = 2.5;
+
+                // Aplica o novo tamanho
+                readingContent.style.fontSize = currentFontSize + 'rem';
+            }
+        </script>
+</body>
+
+</html>

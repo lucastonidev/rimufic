@@ -1,0 +1,37 @@
+/* public/css/base/global.css */
+@import url('./variables.css');
+@import url('./reset.css');
+@import url('../components/header.css');
+@import url('../components/hero.css');
+@import url('../components/buttons.css');
+/* <-- Garante botões em todo o site */
+@import url('../components/modal.css');
+/* <-- Garante modais em todo o site */
+@import url('../components/forms.css');
+/* <-- Garante formulários em todo o site */
+@import url('../responsive/responsive.css');
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background-color: var(--accent);
+  border-radius: 2px;
+}
