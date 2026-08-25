@@ -12,7 +12,9 @@ import { AppError } from "../src/utils/AppError.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
-// Configuração do motor EJS
+
+// 1. A MÁGICA DO EJS (Tem que ser logo aqui no topo!)
+app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
 // 2. CONFIGURA O HELMET COM REGRAS DE SEGURANÇA PERSONALIZADAS
