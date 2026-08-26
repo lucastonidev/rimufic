@@ -22,8 +22,20 @@ export const apiUpdateUserRole = async (req, res, next) => {
   try {
     if (req.params.id === req.user.id)
       return next(new AppError("Não pode alterar próprias permissões.", 403));
-    await userService.updateUserRole(req.params.id, req.body.role);
-    res.status(200).json({ success: true, message: "Permissões atualizadas!" });
+
+    const { role, password, fullName, email } = req.body;
+
+    await userService.updateUserRole(
+      req.params.id,
+      role,
+      password,
+      fullName,
+      email,
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Usuário atualizado com sucesso!" });
   } catch (err) {
     next(err);
   }

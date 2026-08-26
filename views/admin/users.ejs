@@ -80,8 +80,9 @@
             
                     <td>
                       <div class="action-btns">
-                        <button class="btn-action edit" onclick="window.openEditModal('<%= membro.id %>', '<%= membro.role %>')"
-                          title="Editar Permissões">
+                        <button class="btn-action edit"
+                          onclick="window.openEditModal('<%= membro.id %>', '<%= membro.role %>', '<%= membro.full_name || '' %>', '<%= membro.email || '' %>')"
+                          title="Editar Usuário">
                           <i class="ph ph-pencil-simple"></i>
                         </button>
                       
@@ -132,6 +133,10 @@
           <input type="email" id="addEmail" class="form-control" placeholder="lucas@email.com" required>
         </div>
         <div class="form-group">
+          <label>Senha:</label>
+          <input type="text" id="password" class="form-control" placeholder="123456" required>
+        </div>
+        <div class="form-group">
           <label>Nível de Acesso</label>
           <select class="form-control" id="addRole" required>
             <option value="reader">Leitor</option>
@@ -156,6 +161,18 @@
         <p>Altere o acesso de Maria S. Santos.</p>
       </div>
       <form id="formEditUser" class="modal-body">
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="editFullName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="editEmail" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Senha:</label>
+          <input type="text" id="passwordEdit" class="form-control" placeholder="Deixe em branco para não alterar">
+        </div>
         <div class="form-group">
           <label>Nível de Acesso</label>
           <select class="form-control" id="editRoleSelect">
@@ -200,7 +217,7 @@
 
   <!-- Scripts -->
   <script src="/js/pages/admin.js"></script>
-  <script src="/js/pages/users.js"></script>
+<script type="module" src="/js/pages/users.js"></script>
 </body>
 
 </html>

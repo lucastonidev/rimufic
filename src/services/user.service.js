@@ -14,12 +14,12 @@ export const getAllUsers = async () => {
   return data;
 };
 
-export const inviteNewUser = async (email, fullName, role) => {
+export const inviteNewUser = async (email, fullName, role, password) => {
   const adminClient = getAdminClient();
   const { data: authData, error: authError } =
     await adminClient.auth.admin.createUser({
       email,
-      password: "SenhaTemporaria123!",
+      password: password,
       email_confirm: true,
       user_metadata: { full_name: fullName },
     });
@@ -32,12 +32,36 @@ export const inviteNewUser = async (email, fullName, role) => {
   if (profileError) throw profileError;
 };
 
-export const updateUserRole = async (id, role) => {
-  const { error } = await getAdminClient()
+export const updateUserRole = async (id, role, password, fullName, email) => {
+  const adminClient = getAdminClient();
+
+  // 1. Atualiza a permissão e o nome na tabela pública 'profiles'
+  const { error: profileError } = await adminClient
     .from("profiles")
-    .update({ role })
+    .update({
+      role,
+      full_name: fullName,
+    })
     .eq("id", id);
-  if (error) throw error;
+  if (profileError) throw profileError;
+
+  // 2. Prepara o objeto de atualização da Autenticação
+  const authUpdates = {
+    email: email,
+    user_metadata: { full_name: fullName },
+  };
+
+  // Se a senha foi preenchida, adiciona ao pacote de atualização
+  if (password && password.trim() !== "") {
+    authUpdates.password = password;
+  }
+
+  // 3. Atualiza os dados sensíveis na área de Auth
+  const { error: authError } = await adminClient.auth.admin.updateUserById(
+    id,
+    authUpdates,
+  );
+  if (authError) throw authError;
 };
 
 export const banUser = async (id) => {
