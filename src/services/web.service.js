@@ -4,7 +4,24 @@ import axios from "axios";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 
+// Nosso "banco de dados" temporário na memória RAM do servidor
+const cache = {
+  stories: {},
+  home: { data: null, timestamp: 0 },
+};
+
+// Tempo de vida do cache: 1 hora em milissegundos
+const CACHE_TTL = 60 * 60 * 1000;
+
 export const getHomeStories = async () => {
+  const now = Date.now();
+
+  // Se a home está no cache e não venceu, entrega na hora!
+  if (cache.home.data && now - cache.home.timestamp < CACHE_TTL) {
+    return cache.home.data;
+  }
+
+  // Se não tem cache, vai no Supabase
   const { data: stories, error } = await supabase
     .from("stories")
     .select("*")
@@ -12,10 +29,24 @@ export const getHomeStories = async () => {
     .limit(6);
 
   if (error) throw error;
+
+  // Salva na memória para os próximos acessos
+  cache.home.data = stories;
+  cache.home.timestamp = now;
+
   return stories;
 };
 
 export const getStoryWithContent = async (id) => {
+  const now = Date.now();
+
+  // 1. O PULO DO GATO: Se existe no cache e ainda não deu 1 hora, devolve na hora!
+  if (cache.stories[id] && now - cache.stories[id].timestamp < CACHE_TTL) {
+    console.log(`⚡ Servindo história ${id} via Cache Mágico!`);
+    return cache.stories[id].data;
+  }
+
+  // 2. Se o cache não existe ou venceu, faz o trabalho pesado de ir no Supabase e GitHub
   const { data: story, error } = await supabase
     .from("stories")
     .select("*")
@@ -26,7 +57,6 @@ export const getStoryWithContent = async (id) => {
 
   let htmlContent = "<p>O conteúdo desta lenda se perdeu no tempo...</p>";
 
-  // Busca o Markdown no GitHub e converte com segurança
   if (story.content && story.content.startsWith("http")) {
     try {
       const response = await axios.get(story.content);
@@ -35,7 +65,6 @@ export const getStoryWithContent = async (id) => {
         parts.length > 2 ? parts.slice(2).join("---").trim() : response.data;
 
       const rawHtml = marked.parse(pureMarkdown);
-
       htmlContent = sanitizeHtml(rawHtml, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat([
           "img",
@@ -50,28 +79,16 @@ export const getStoryWithContent = async (id) => {
     }
   }
 
-  // Calcula tempo de leitura (200 palavras por min)
   const wordsCount = htmlContent.replace(/<[^>]*>?/gm, "").split(/\s+/).length;
   const readingTime = Math.ceil(wordsCount / 200) || 1;
 
-  return { story, htmlContent, readingTime };
-};
+  const result = { story, htmlContent, readingTime };
 
-export const searchStories = async (q, genre, sort) => {
-  let dbQuery = supabase.from("stories").select("*");
+  // 3. Salva o resultado final na memória para o próximo leitor
+  cache.stories[id] = {
+    data: result,
+    timestamp: now,
+  };
 
-  if (q) dbQuery = dbQuery.or(`title.ilike.%${q}%,synopsis.ilike.%${q}%`);
-
-  if (genre) {
-    if (Array.isArray(genre)) dbQuery = dbQuery.in("genre", genre);
-    else dbQuery = dbQuery.eq("genre", genre);
-  }
-
-  if (sort === "az") dbQuery = dbQuery.order("title", { ascending: true });
-  else dbQuery = dbQuery.order("created_at", { ascending: false });
-
-  const { data: stories, error } = await dbQuery;
-
-  if (error) throw error;
-  return stories;
+  return result;
 };
