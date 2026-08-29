@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/pages/prompt.css">
+    <title>Rimufic ✨ | Gerador de Prompts</title>
+</head>
+
+<body>
+
+    <%- include('partials/header') %>
+
+    <main class="container">
+        <section class="hero" style="margin-bottom: 2rem; padding: 4rem 20px;">
+            <h1>O Oráculo</h1>
+            <p>Um gerador inteligente para conjurar o prompt perfeito da sua próxima obra no ChatGPT.</p>
+        </section>
+
+        <div class="main-grid">
+            <!-- Coluna Esquerda: Formulário -->
+            <section class="left-panel">
+                <div class="glass-panel glass">
+                    <div class="action-row">
+                        <button class="btn-outline" onclick="loadExampleData()" id="btnLoadExample" title="Testar rapidamente">
+                            <i class="ph ph-lightbulb"></i> Exemplo
+                        </button>
+                        <button class="btn-outline" onclick="clearForm()" id="btnClear" title="Zerar dados" style="border-color: var(--danger); color: var(--danger);">
+                            <i class="ph ph-arrows-clockwise"></i> Limpar
+                        </button>
+                    </div>
+
+                    <form id="promptForm">
+                        <!-- CAMPOS ESSENCIAIS (Sempre visíveis) -->
+                        <div class="form-group">
+                            <label for="fandom">Universo / Fandom <i class="ph ph-info" title="Ex: Harry Potter, Marvel, etc."></i></label>
+                            <div class="input-icon-wrapper">
+                                <i class="ph ph-books"></i>
+                                <input type="text" id="fandom" class="form-control" placeholder="Digite o nome do universo..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="charA">Personagem A</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="ph ph-user"></i>
+                                    <input type="text" id="charA" class="form-control" placeholder="Nome do personagem..." required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="charB">Personagem B</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="ph ph-user"></i>
+                                    <input type="text" id="charB" class="form-control" placeholder="Nome do personagem..." required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tone">Tom / Atmosfera</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="ph ph-mask-happy"></i>
+                                    <select id="tone" class="form-control">
+                                        <option value="Slow Burn">Slow Burn (Lento)</option>
+                                        <option value="Angst">Angst (Angústia, drama)</option>
+                                        <option value="Fluff">Fluff (Reconfortante)</option>
+                                        <option value="Dark">Dark (Sombrio)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="trope">Tropo Principal</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="ph ph-heart-break"></i>
+                                    <select id="trope" class="form-control">
+                                        <option value="Inimigos para Amantes">Inimigos para Amantes</option>
+                                        <option value="Amigos para Amantes">Amigos para Amantes</option>
+                                        <option value="Proximidade Forçada">Proximidade Forçada</option>
+                                        <option value="Identidade Secreta">Identidade Secreta</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hook">Gancho Inicial</label>
+                            <textarea id="hook" class="form-control" placeholder="Descreva como a história começa..."></textarea>
+                        </div>
+
+                        <!-- BOTÃO DE OPÇÕES AVANÇADAS -->
+                        <!-- BOTÃO DE OPÇÕES AVANÇADAS -->
+                        <button type="button" class="btn-outline" id="btnToggleAdvanced" onclick="toggleAdvanced()" style="width: 100%; margin-bottom: 1.5rem; justify-content: center; border-style: dashed;">
+                            <i class="ph ph-caret-up"></i> Ocultar Opções Avançadas
+                        </button>
+
+                        <!-- CAMPOS AVANÇADOS (Visíveis por padrão) -->
+                        <div id="advancedOptions" style="display: block; animation: fadeIn 0.3s ease-in-out;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pacing">Ritmo</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="ph ph-timer"></i>
+                                        <select id="pacing" class="form-control">
+                                            <option value="Lento">Lento</option>
+                                            <option value="Moderado" selected>Moderado</option>
+                                            <option value="Rápido">Rápido</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="focus">Foco</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="ph ph-crosshair"></i>
+                                        <select id="focus" class="form-control">
+                                            <option value="Romance">Romance</option>
+                                            <option value="Trama">Trama / Enredo</option>
+                                            <option value="Equilíbrio" selected>Equilíbrio</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="descLevel">Descrição</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="ph ph-feather"></i>
+                                    <select id="descLevel" class="form-control">
+                                        <option value="Moderado">Moderada</option>
+                                        <option value="Detalhado" selected>Detalhada</option>
+                                        <option value="Extremamente Detalhado">Extrema (Mostre, não conte)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="details">Regras Específicas</label>
+                                <textarea id="details" class="form-control" placeholder="Diálogos obrigatórios, coisas a evitar..."></textarea>
+                            </div>
+
+                            <div class="checkbox-container">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="noRepetition" checked>
+                                    Evitar repetição e usar vocabulário rico
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="longChapters" checked>
+                                    Capítulos longos e substanciais
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="btnGenerate" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 1rem;">
+                            <i class="ph ph-magic-wand"></i> Gerar Prompt
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="right-panel">
+                <div class="glass-panel output-container glass">
+                    <div class="output-header">
+                        <h3 style="font-family: 'Playfair Display', serif; color: var(--accent);"><i class="ph ph-terminal"></i> Resultado</h3>
+                        <div class="output-actions">
+                            <button class="btn-icon" id="btnCopy" onclick="copyPrompt()" title="Copiar Texto Puro">
+                                <i class="ph ph-copy"></i>
+                            </button>
+                            <button class="btn-icon" id="btnSave" onclick="saveCurrentPrompt()" title="Salvar Prompt">
+                                <i class="ph-fill ph-floppy-disk" style="color: #22c55e;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="editor-toolbar" id="editorToolbar" style="display: none;">
+                        <button type="button" class="btn-icon" onmousedown="formatText(event, 'bold')"><i class="ph ph-text-b"></i></button>
+                        <button type="button" class="btn-icon" onmousedown="formatText(event, 'italic')"><i class="ph ph-text-italic"></i></button>
+                        <div class="toolbar-divider"></div>
+                        <button type="button" class="btn-icon" onmousedown="formatText(event, 'formatBlock', 'H2')"><i class="ph ph-text-h"></i></button>
+                        <button type="button" class="btn-icon" onmousedown="formatText(event, 'formatBlock', 'P')"><i class="ph ph-paragraph"></i></button>
+                    </div>
+
+                    <!-- 👇 CAIXA DE TEXTO QUE ESTAVA FALTANDO 👇 -->
+                    <div id="promptOutput" contenteditable="true" spellcheck="false">
+                        <div class="empty-state" contenteditable="false">
+                            <i class="ph ph-sparkle"></i>
+                            <p>Preencha os dados e clique em "Gerar".</p>
+                        </div>
+                    </div>
+                    <!-- 👆 -->
+
+                </div>
+            </section>
+        </div>
+
+        <section class="saved-folders-section" style="margin-top: 2rem;">
+            <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
+                <i class="ph-fill ph-folder-open" style="color: var(--accent);"></i> Meus Universos Salvos
+            </h2>
+            
+            <!-- A Grid das pastas -->
+            <div id="savedPromptsList" class="folders-grid">
+                <!-- Injetado pelo JS -->
+            </div>
+        </section>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/pages/prompt.js"></script>
+</body>
+</html>

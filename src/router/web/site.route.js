@@ -28,6 +28,9 @@ router.get("/search", renderSearch);
 router.get("/read/:id", renderReadStory);
 router.get("/library", renderLibrary);
 router.get("/random", redirectRandomStory);
+router.get("/prompt", (req, res) => {
+  res.render("prompt");
+});
 
 // Rotas de Autenticação
 router.get("/login", renderLogin);

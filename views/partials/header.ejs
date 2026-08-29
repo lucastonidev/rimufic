@@ -1,8 +1,8 @@
-<header class="glass container" style="margin-top: 1rem;">
+<header class="glass container" style="margin-top: 1rem">
   <nav class="nav-container">
     <!-- Alterado para usar links reais (href) em vez de JS para o SPA -->
     <a href="/" class="brand">
-      <img src="/assets/logo-192.png" alt="Logo Rimufic" style="width: 52px; object-fit: contain;">
+      <img src="/assets/logo-192.png" alt="Logo Rimufic" style="width: 52px; object-fit: contain" />
       Rimufic
     </a>
 
@@ -11,28 +11,74 @@
     </button>
 
     <ul class="nav-links" id="navLinks">
-      <li><a href="/" class="nav-link">Início</a></li>
-      <li><a href="/search" class="nav-link">Buscar</a></li>
-      <li><a href="/library" class="nav-link">Favoritos</a></li>
-    <li><a href="/random" class="nav-link"><i class="ph ph-dice-three" style="font-size: 1.2rem; transform: translateY(3px);"></i> Aleatória</a></li>
+      <li>
+        <a href="/" class="nav-link">
+          <i class="ph ph-house" style="font-size: 1.2rem; transform: translateY(3px)"></i> Início
+        </a>
+      </li>
+      <li>
+        <a href="/search" class="nav-link">
+          <i class="ph ph-magnifying-glass" style="font-size: 1.2rem; transform: translateY(3px)"></i> Buscar
+        </a>
+      </li>
+      <li>
+        <a href="/library" class="nav-link">
+          <i class="ph ph-heart" style="font-size: 1.2rem; transform: translateY(3px)"></i> Favoritos
+        </a>
+      </li>
+      <li>
+        <a href="/random" class="nav-link">
+          <i class="ph ph-dice-three" style="font-size: 1.2rem; transform: translateY(3px)"></i> Aleatória
+        </a>
+      </li>
+      <li>
+        <a href="/prompt" class="nav-link">
+          <i class="ph ph-magic-wand" style="font-size: 1.2rem; transform: translateY(3px)"></i> Gerador de Prompt
+        </a>
+      </li>
 
       <li>
         <% if (locals.user) { %>
-          <!-- Se estiver logado: Mostra o botão do Painel com a Inicial do Nome -->
-          <a href="/admin" class="btn-primary" style="color: aliceblue; padding: 0.4rem 1rem; display: flex; align-items: center; gap: 8px;">
-            <div
-              style="width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: aliceblue; font-size: 0.8rem; font-weight: bold;">
-              <%= user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U' %>
-            </div>
-            Meu Painel
-          </a>
-          <% } else { %>
-            <!-- Se NÃO estiver logado: Mostra o botão normal de Entrar -->
-            <a href="/login" class="btn-primary"
-              style="padding: 0.5rem 1.2rem; display: flex; align-items: center; gap: 8px;">
-              <i class="ph ph-user"></i> Entrar
-            </a>
-            <% } %>
+        <!-- Se estiver logado: Mostra o botão do Painel com a Inicial do Nome -->
+        <a
+          href="/admin"
+          class="btn-primary"
+          style="
+            color: aliceblue;
+            padding: 0.4rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          <div
+            style="
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background: rgba(255, 255, 255, 0.2);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: aliceblue;
+              font-size: 0.8rem;
+              font-weight: bold;
+            "
+          >
+            <%= user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U' %>
+          </div>
+          Meu Painel
+        </a>
+        <% } else { %>
+        <!-- Se NÃO estiver logado: Mostra o botão normal de Entrar -->
+        <a
+          href="/login"
+          class="btn-primary"
+          style="padding: 0.5rem 1.2rem; display: flex; align-items: center; gap: 8px"
+        >
+          <i class="ph ph-user"></i> Entrar
+        </a>
+        <% } %>
       </li>
     </ul>
   </nav>

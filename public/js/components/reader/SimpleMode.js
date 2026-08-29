@@ -103,9 +103,7 @@ export class SimpleMode {
 
         // Curva de aceleração suave (easeInOutQuad) para ficar com o peso de uma página real
         const ease =
-          progress < 0.5
-            ? 2 * progress * progress
-            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+          progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
         element.scrollLeft = start + change * ease;
 
@@ -143,8 +141,7 @@ export class SimpleMode {
   updateScrollProgress() {
     if (this.state.mode !== "scroll") return;
     const scrollTop = this.ui.viewportSimple.scrollTop;
-    const scrollHeight =
-      this.ui.viewportSimple.scrollHeight - this.ui.viewportSimple.clientHeight;
+    const scrollHeight = this.ui.viewportSimple.scrollHeight - this.ui.viewportSimple.clientHeight;
 
     if (scrollHeight <= 0) {
       this.ui.progressBar.style.width = "100%";
@@ -161,6 +158,8 @@ export class SimpleMode {
       if (this.state.mode === "scroll")
         window.requestAnimationFrame(() => this.updateScrollProgress());
     });
+
+    // SUPORTE A GESTOS DE SWIPE NO CELULAR
     this.ui.containerSimple.addEventListener(
       "touchstart",
       (e) => {
@@ -169,13 +168,22 @@ export class SimpleMode {
       },
       { passive: true },
     );
+
     this.ui.containerSimple.addEventListener(
       "touchend",
       (e) => {
         if (this.state.mode !== "simple" || this.state.isAnimating) return;
         let touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < this.touchStartX - 50) this.nextPage();
-        if (touchEndX > this.touchStartX + 50) this.prevPage();
+        let diff = this.touchStartX - touchEndX;
+
+        // Se arrastar mais de 40 pixels para a esquerda, avança a página
+        if (diff > 40) {
+          this.nextPage();
+        }
+        // Se arrastar mais de 40 pixels para a direita, volta a página
+        else if (diff < -40) {
+          this.prevPage();
+        }
       },
       { passive: true },
     );
@@ -187,11 +195,7 @@ export class SimpleMode {
       element.classList.add(`${prefix}animated`, animationName, "book-anim");
       function handleAnimationEnd(event) {
         event.stopPropagation();
-        element.classList.remove(
-          `${prefix}animated`,
-          animationName,
-          "book-anim",
-        );
+        element.classList.remove(`${prefix}animated`, animationName, "book-anim");
         resolve("Animation ended");
       }
       element.addEventListener("animationend", handleAnimationEnd, {

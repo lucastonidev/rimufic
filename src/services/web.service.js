@@ -103,3 +103,13 @@ export const getRandomStoryId = async () => {
   const randomIndex = Math.floor(Math.random() * data.length);
   return data[randomIndex].id;
 };
+
+export const clearStoryCache = (id) => {
+  if (id && cache.stories[id]) {
+    delete cache.stories[id];
+    console.log(`🧹 Cache da história ${id} limpo com sucesso!`);
+  }
+  // Limpa também o cache da página inicial para atualizar os destaques
+  cache.home.data = null;
+  cache.home.timestamp = 0;
+};

@@ -4,6 +4,7 @@ import sharp from "sharp";
 import TurndownService from "turndown";
 import PQueue from "p-queue";
 import { uploadToGitHub } from "./github.service.js";
+import { clearStoryCache } from "./web.service.js";
 
 const turndownService = new TurndownService();
 
@@ -83,6 +84,7 @@ export const insertStoryToDatabase = async (storyPayload, userToken) => {
     .insert([storyPayload])
     .select();
   if (error) throw error;
+  clearStoryCache();
   return data;
 };
 
@@ -99,7 +101,8 @@ export const deleteStoryFromDatabase = async (storyId, userToken) => {
     .from("stories")
     .delete()
     .eq("id", storyId);
-  if (error) throw error;
+    if (error) throw error;
+    clearStoryCache(storyId);
 };
 
 export const updateStoryInDatabase = async (
@@ -121,6 +124,8 @@ export const updateStoryInDatabase = async (
     .eq("id", storyId)
     .select();
   if (error) throw error;
+
+  clearStoryCache(storyId);
   return data;
 };
 

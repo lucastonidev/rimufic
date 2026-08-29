@@ -1,0 +1,337 @@
+/* public/css/pages/prompt.css */
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 4rem;
+}
+
+.glass-panel {
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon-wrapper i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+.input-icon-wrapper .form-control {
+  padding-left: 3rem; /* Espaço pro ícone */
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+    padding-top: 1rem;
+}
+
+/* Checkboxes customizados */
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: rgba(11, 7, 16, 0.4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1.5rem;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  user-select: none;
+}
+
+.custom-checkbox input {
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Área de Resultado */
+.output-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+}
+
+.output-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editor-toolbar {
+  display: flex;
+  gap: 5px;
+  background: rgba(25, 15, 35, 0.95);
+  padding: 8px;
+  border-radius: 12px 12px 0 0;
+  border: 1px solid var(--glass-border);
+  border-bottom: none;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--glass-border);
+  margin: auto 4px;
+}
+
+#promptOutput {
+  flex-grow: 1;
+  background: rgba(11, 7, 16, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 0 0 12px 12px;
+  padding: 1.5rem;
+  min-height: 400px;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-y: auto;
+  color: #e2e8f0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#promptOutput:focus {
+  border-color: var(--accent);
+}
+
+/* Formatação Rica de Saída */
+#promptOutput h2 {
+  font-size: 1.4rem;
+  color: var(--accent);
+  border-left: 4px solid var(--accent);
+  padding-left: 12px;
+  margin: 20px 0 10px 0;
+}
+
+#promptOutput strong {
+  color: #facc15;
+}
+#promptOutput em {
+  color: #60a5fa;
+}
+#promptOutput p {
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-align: center;
+  opacity: 0.7;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--glass-border);
+}
+
+/* Lista de Salvos */
+.saved-list-container {
+  margin-top: 2rem;
+}
+.saved-list-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+.saved-list {
+  display: grid;
+  gap: 0.8rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.saved-item {
+  background: rgba(25, 15, 35, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.saved-item:hover {
+  background: rgba(157, 78, 221, 0.1);
+  border-color: var(--accent);
+}
+.saved-item-info h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+.saved-item-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Toasts */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  animation: slideIn 0.3s ease-out forwards;
+}
+.toast.success {
+  border-left: 4px solid #22c55e;
+}
+.toast.error {
+  border-left: 4px solid #ef4444;
+}
+.toast.fade-out {
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sistema de Pastas (Folders) */
+.folders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.folder-card {
+    background: rgba(25, 15, 35, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.folder-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    background: rgba(157, 78, 221, 0.1);
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.folder-header h3 {
+    margin: 0;
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+.folder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.folder-item:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.folder-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
