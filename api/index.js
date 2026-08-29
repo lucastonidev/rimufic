@@ -18,43 +18,51 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
 // 2. CONFIGURA O HELMET COM REGRAS DE SEGURANÇA PERSONALIZADAS
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      
-      // Permite scripts do seu site e do unpkg
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"], 
-      
-      // Permite atributos de evento em linha no HTML (como onclick e onchange)
-      scriptSrcAttr: ["'unsafe-inline'"], 
-      
-      // Ampliamos para cobrir redirecionamentos de CDN que o Phosphor possa fazer
-      styleSrc: [
-        "'self'", 
-        "'unsafe-inline'", 
-        "https://fonts.googleapis.com", 
-        "https://unpkg.com", 
-        "https://cdn.jsdelivr.net"
-      ],
-      
-      // Adicionamos 'data:' porque algumas fontes carregam em base64 internamente
-      fontSrc: [
-        "'self'", 
-        "https://fonts.gstatic.com", 
-        "https://unpkg.com", 
-        "https://cdn.jsdelivr.net",
-        "data:"
-      ],
-      
-      // Permite imagens locais, em base64 e da CDN
-      imgSrc: ["'self'", "data:", "https://cdn.jsdelivr.net"],
-      
-      // Permite que o Axios (ou fetch) se conecte à CDN
-      connectSrc: ["'self'", "https://cdn.jsdelivr.net"]
-    }
-  }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+
+        // Permitir o StPageFlip (cdn.jsdelivr.net) e ícones Phosphor (unpkg)
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://unpkg.com",
+          "https://cdn.jsdelivr.net",
+        ],
+
+        // Permite atributos de evento em linha no HTML (como onclick e onchange)
+        scriptSrcAttr: ["'unsafe-inline'"],
+
+        // Ampliamos para cobrir redirecionamentos e permitir o Animate.css
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://unpkg.com",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com", // <-- ADICIONADO AQUI
+        ],
+
+        // Adicionamos 'data:' porque algumas fontes carregam em base64 internamente
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://unpkg.com",
+          "https://cdn.jsdelivr.net",
+          "data:",
+        ],
+
+        // Permite imagens locais, em base64 e da CDN
+        imgSrc: ["'self'", "data:", "https://cdn.jsdelivr.net"],
+
+        // Permite que o Axios (ou fetch) se conecte à CDN
+        connectSrc: ["'self'", "https://cdn.jsdelivr.net"],
+      },
+    },
+  }),
+);
 
 // Middlewares essenciais
 app.use(express.json()); // Entender JSON

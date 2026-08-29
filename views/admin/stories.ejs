@@ -129,11 +129,13 @@
 
       if (confirmacao) {
         try {
-          const response = await fetch(`/admin/stories/${id}`, {
+          const response = await fetch(`/api/v1/admin/stories/${id}`, {
             method: 'DELETE'
           });
-
-          const result = await response.json();
+          const contentType = response.headers.get("content-type") || "";
+          const result = contentType.includes("application/json")
+            ? await response.json()
+            : { message: `Resposta inválida do servidor (HTTP ${response.status}).` };
 
           if (response.ok && result.success) {
             alert("Obra apagada com sucesso!");

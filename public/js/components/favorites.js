@@ -9,7 +9,16 @@ class FavoritesManager {
   // Puxa os dados do armazenamento local
   getFavorites() {
     const data = localStorage.getItem(this.storageKey);
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+
+    try {
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.warn("Favoritos inválidos no localStorage. Resetando cache local.");
+      localStorage.removeItem(this.storageKey);
+      return [];
+    }
   }
 
   // Adiciona ou remove um favorito

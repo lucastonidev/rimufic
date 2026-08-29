@@ -6,7 +6,10 @@ import { loginLimiter } from "../../middleware/rateLimit.middleware.js";
 // Controladores
 import { renderHome } from "../../controllers/web/home.controller.js";
 import { renderSearch } from "../../controllers/web/search.controller.js";
-import { renderReadStory } from "../../controllers/web/read.controller.js";
+import {
+  renderReadStory,
+  redirectRandomStory,
+} from "../../controllers/web/read.controller.js";
 import { renderLibrary } from "../../controllers/web/library.controller.js";
 import {
   renderLogin,
@@ -24,6 +27,7 @@ router.get("/", renderHome);
 router.get("/search", renderSearch);
 router.get("/read/:id", renderReadStory);
 router.get("/library", renderLibrary);
+router.get("/random", redirectRandomStory);
 
 // Rotas de Autenticação
 router.get("/login", renderLogin);

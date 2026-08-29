@@ -1,115 +1,174 @@
+<!-- views/read.ejs -->
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-BR" data-theme="dark">
 <head>
     <%- include('partials/head') %>
-        <link rel="stylesheet" href="../css/pages/read.css">
-        <title>Lendo: A Fúria do Boitatá - Rimufic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+    <link rel="stylesheet" href="/css/pages/read.css">
+    <title>Lendo: <%= story.title %> - Rimufic</title>
 </head>
-
 <body>
 
     <%- include('partials/header') %>
 
-        <main class="container">
+    <main class="container">
         
-            <section class="story-hero">
-                <div class="story-cover-large"
-                    style="<%= story.cover_url ? 'background-image: url(' + story.cover_url + '); background-size: cover; background-position: center;' : '' %>">
-                    <%= !story.cover_url ? '📖' : '' %>
+        <!-- INFORMAÇÕES DA OBRA -->
+        <section class="story-hero">
+            <div class="story-cover-large"
+                style="<%= story.cover_url ? 'background-image: url(' + story.cover_url + '); background-size: cover; background-position: center;' : '' %>">
+                <%= !story.cover_url ? '📖' : '' %>
+            </div>
+    
+            <div class="story-info">
+                <h1><%= story.title %></h1>
+                <p class="story-author">Escrito por <span><%= story.author %></span></p>
+    
+                <div class="story-tags">
+                    <span class="tag" style="text-transform: capitalize;"><%= story.genre %></span>
                 </div>
-        
-                <div class="story-info">
-                    <h1>
-                        <%= story.title %>
-                    </h1>
-                    <p class="story-author">Escrito por <span>
-                            <%= story.author %>
-                        </span></p>
-        
-                    <div class="story-tags">
-                        <span class="tag" style="text-transform: capitalize;">
-                            <%= story.genre %>
-                        </span>
+    
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
+                    <%= story.synopsis || 'Sem sinopse disponível.' %>
+                </p>
+    
+                <div class="story-stats">
+                    <div class="stat-item" title="Tempo de Leitura">
+                        <i class="ph ph-clock"></i> ~<%= readingTime %> min
                     </div>
-        
-                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
-                        <%= story.synopsis || 'Sem sinopse disponível.' %>
-                    </p>
-        
-                    <div class="story-stats">
-                        <div class="stat-item" title="Tempo de Leitura">
-                            <i class="ph ph-clock"></i> ~<%= readingTime %> min
-                        </div>
-                        <div class="stat-item" title="Data de Publicação">
-                            <i class="ph ph-calendar"></i>
-                            <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
-                        </div>
+                    <div class="stat-item" title="Data de Publicação">
+                        <i class="ph ph-calendar"></i>
+                        <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
                     </div>
                 </div>
-            </section>
-        
-            <section class="reading-wrapper">
-        
-                <div class="reading-tools">
-                    <!-- Botão Diminuir Fonte -->
-                    <button class="btn-icon" onclick="changeFontSize(-0.15)" title="Diminuir Fonte">
-                        <i class="ph ph-minus"></i>
+            </div>
+        </section>
+
+        <!-- LEITOR SUPREMO (HÍBRIDO) -->
+        <section class="supreme-reader-wrapper" id="supremeReader">
+            
+            <header class="reader-header">
+                <div class="header-title">Boa leitura!</div>
+                <div style="display: flex; gap: 10px;">
+                    <!-- Botão de Tela Cheia -->
+                    <button class="action-btn" id="btnFullscreen" onclick="toggleFullscreen()" title="Tela Cheia">
+                        <i class="ph ph-corners-out"></i>
                     </button>
-                
-                    <!-- Botão Aumentar Fonte -->
-                    <button class="btn-icon" onclick="changeFontSize(0.15)" title="Aumentar Fonte">
-                        <i class="ph ph-plus"></i>
-                    </button>
-                
-                    <div style="width: 1px; background: var(--glass-border); margin: 0 10px;"></div>
-                
-                    <!-- Botão Favoritar conectado ao favorites.js -->
-                    <button class="btn-fav" data-id="<%= story.id %>" data-title="<%= story.title %>" data-author="<%= story.author %>"
-                        data-cover="<%= story.cover_url || '' %>" data-genre="<%= story.genre %>" onclick="toggleFav(this)"
-                        title="Favoritar Lenda" style="width: 40px; height: 40px; font-size: 1.4rem;">
+
+                    <button class="btn-fav action-btn" data-id="<%= story.id %>" data-title="<%= story.title %>" 
+                        data-author="<%= story.author %>" data-cover="<%= story.cover_url || '' %>" 
+                        data-genre="<%= story.genre %>" onclick="toggleFav(this)" title="Favoritar Lenda">
                         <i class="ph ph-heart"></i>
                     </button>
-                </div>
-        
-                <article class="reading-content">
-                    <!-- A MÁGICA ACONTECE AQUI: Injetamos o HTML convertido direto na tela! -->
-                    <%- htmlContent %>
-                </article>
-        
-                <div class="reading-footer">
-                    <a href="/" class="btn-nav">
-                        <i class="ph ph-caret-left"></i> Voltar ao Grimório
-                    </a>
-                    <div style="font-size: 0.9rem; color: var(--text-muted);">
-                        Fim do Conto
-                    </div>
-                    <button class="btn-nav" disabled>
-                        Deixe um Comentário <i class="ph ph-chat-teardrop-text"></i>
+                    
+                    <button class="action-btn" id="btnSettings" title="Configurações de Leitura">
+                        <i class="ph ph-sliders-horizontal"></i>
                     </button>
                 </div>
-        
-            </section>
-        </main>
+            </header>
 
-        <script src="/js/components/favorites.js"></script>
-        <script src="/js/main.js"></script>
-        <script>
-            // Lógica de Zoom na Fonte
-            const readingContent = document.querySelector('.reading-content');
-            let currentFontSize = 1.25; // O valor base que você definiu no read.css (1.25rem)
+            <div class="settings-panel" id="settingsPanel">
+                <div class="settings-group">
+                    <span class="settings-label">Estilo de Leitura</span>
+                    <div class="settings-row" style="flex-wrap: wrap;">
+                        <button class="opt-btn" id="btnModeRealistic" onclick="setReadingMode('realistic')">
+                            <i class="ph ph-book"></i> Realista
+                        </button>
+                        <button class="opt-btn active" id="btnModeSimple" onclick="setReadingMode('simple')">
+                            <i class="ph ph-book-open"></i> Paginado
+                        </button>
+                        <button class="opt-btn" id="btnModeScroll" onclick="setReadingMode('scroll')">
+                            <i class="ph ph-arrows-down-up"></i> Rolagem
+                        </button>
+                    </div>
+                </div>
 
-            function changeFontSize(step) {
-                currentFontSize += step;
+                <div class="settings-group">
+                    <span class="settings-label">Tema</span>
+                    <div class="settings-row">
+                        <button class="opt-btn active" id="btnThemeDark" onclick="setTheme('dark')">Noite</button>
+                        <button class="opt-btn" id="btnThemeSepia" onclick="setTheme('sepia')">Sépia</button>
+                        <button class="opt-btn" id="btnThemeLight" onclick="setTheme('light')">Dia</button>
+                    </div>
+                </div>
 
-                // Travas de segurança para impedir que a fonte fique minúscula ou gigante
-                if (currentFontSize < 0.9) currentFontSize = 0.9;
-                if (currentFontSize > 2.5) currentFontSize = 2.5;
+                <div class="settings-group" id="fontGroup">
+                    <span class="settings-label">Tamanho do Texto</span>
+                    <p class="warning-msg" id="fontWarning">Tamanho fixo no Modo Realista.</p>
+                    <div class="settings-row" style="background: transparent; border: none; padding: 0;" id="fontControls">
+                        <button class="opt-btn font-btn" onclick="changeFontSize(-0.1)"><i class="ph ph-text-t"></i>-</button>
+                        <div style="flex: 1; text-align: center; color: var(--accent); font-weight: bold;" id="fontSizeDisplay">M</div>
+                        <button class="opt-btn font-btn" onclick="changeFontSize(0.1)"><i class="ph ph-text-t"></i>+</button>
+                    </div>
+                </div>
 
-                // Aplica o novo tamanho
-                readingContent.style.fontSize = currentFontSize + 'rem';
-            }
-        </script>
+                <div class="settings-group" id="animGroup">
+                    <span class="settings-label">Transição de Página</span>
+                    <div class="settings-row">
+                        <button class="opt-btn" id="btnAnimFlip" onclick="setAnimation('flip')">Virar</button>
+                        <button class="opt-btn" id="btnAnimSlide" onclick="setAnimation('slide')">Deslizar</button>
+                        <button class="opt-btn" id="btnAnimNone" onclick="setAnimation('none')">Rápida</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mainArea" class="reader-body">
+                <div class="reader-container active" id="containerSimple">
+                    <div class="tap-zone left" id="tapLeft" onclick="prevPageSimple()"><i class="ph ph-caret-left"></i></div>
+                    
+                    <div class="reader-viewport" id="viewportSimple">
+                        <div class="reader-content" id="bookContentSimple">
+                            <%- htmlContent %>
+                        </div>
+                    </div>
+
+                    <div class="tap-zone right" id="tapRight" onclick="nextPageSimple()"><i class="ph ph-caret-right"></i></div>
+                </div>
+
+                <div class="reader-container" id="containerRealistic">
+                    <div class="flipbook-viewport">
+                        <div id="flipbook">
+                            <!-- Capa -->
+                            <div class="page page-cover" data-density="hard">
+                                <div class="page-content" style="justify-content: center; text-align: center; padding: 0;">
+                                    <h1><%= story.title %></h1>
+                                    <p style="text-indent: 0; color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif;">Contos de Rimufic</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Fallback -->
+                            <div class="page">
+                                <div class="page-content">
+                                    <h2 style="text-align:center; color: var(--accent); margin-bottom: 2rem;"><%= story.title %></h2>
+                                    <p style="text-align:center; font-style: italic;">O modo realista requer quebra de páginas. No momento, leia pelo modo Paginado ou Rolagem.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="page page-cover page-cover-bottom" data-density="hard">
+                                <div class="page-content" style="justify-content: center; text-align: center;">
+                                    <i class="ph ph-book-open-text" style="font-size: 4rem; color: var(--accent); margin-bottom: 20px;"></i>
+                                    <h2 style="font-family: 'Playfair Display', serif; color: var(--text-main);">Fim</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+            <footer class="reader-footer">
+                <div class="progress-bar-container">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="page-info" id="pageInfo">Carregando...</div>
+            </footer>
+        </section>
+    </main>
+
+    <script src="/js/components/favorites.js"></script>
+    <script src="/js/main.js"></script>
+    <script type="module" src="/js/pages/read.js"></script>
 </body>
-
 </html>

@@ -10,7 +10,11 @@ export const validateRequest = (schema) => {
       next();
     } catch (error) {
       // Se falhar, formata as mensagens de erro do Zod para o usuário
-      const errorMessages = error.errors.map((err) => err.message).join(" | ");
+      const issues = Array.isArray(error?.issues) ? error.issues : [];
+      const errorMessages =
+        issues.length > 0
+          ? issues.map((issue) => issue.message).join(" | ")
+          : "Dados inválidos enviados na requisição.";
       next(new AppError(errorMessages, 400));
     }
   };

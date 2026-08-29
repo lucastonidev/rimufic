@@ -1,0 +1,16 @@
+/* public/css/components/reader.css */
+@import url('./reader/ReaderPanel.css');
+@import url('./reader/SimpleMode.css');
+@import url('./reader/RealisticMode.css');
+
+/* As Variáveis de Tema (Deixe-as aqui no root) */
+[data-theme="sepia"] { --bg-main: #efe4d0; --bg-surface: #f8efe0; --text-main: #4a3c31; --text-muted: #7a695c; --accent: #d35400; --border: rgba(122, 105, 92, 0.2); --shadow: 0 15px 40px rgba(0, 0, 0, 0.4); --page-bg: #f8efe0; }
+[data-theme="light"] { --bg-main: #f3f4f6; --bg-surface: #ffffff; --text-main: #1f2937; --text-muted: #6b7280; --accent: #6366f1; --border: rgba(0, 0, 0, 0.1); --shadow: 0 10px 30px rgba(0, 0, 0, 0.1); --page-bg: #ffffff; }
+
+@media (max-width: 600px) {
+  .supreme-reader-wrapper { height: 80vh; }
+  header.reader-header, footer.reader-footer { padding: 10px 15px; }
+  .tap-zone { width: 40%; }
+  .tap-zone i { display: none; }
+  .settings-panel { left: 20px; right: 20px; min-width: auto; }
+}

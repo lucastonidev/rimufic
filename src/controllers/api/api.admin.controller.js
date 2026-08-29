@@ -6,10 +6,12 @@ import { AppError } from "../../utils/AppError.js";
 // --- USUÁRIOS (API) ---
 export const apiInviteUser = async (req, res, next) => {
   try {
-    const { fullName, email, role } = req.body;
-    if (!email || !fullName)
-      return next(new AppError("Nome e e-mail são obrigatórios.", 400));
-    await userService.inviteNewUser(email, fullName, role);
+    const { fullName, email, role, password } = req.body;
+    if (!email || !fullName || !password)
+      return next(
+        new AppError("Nome, e-mail e senha são obrigatórios.", 400),
+      );
+    await userService.inviteNewUser(email, fullName, role, password);
     res
       .status(201)
       .json({ success: true, message: "Membro adicionado com sucesso!" });

@@ -1,0 +1,101 @@
+/* public/css/components/reader/SimpleMode.css */
+
+#viewportSimple {
+  width: calc(100% - 100px);
+  max-width: 750px;
+  height: 100%; /* Agora ele ocupa 100% da área segura */
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  padding: 30px 0;
+  box-sizing: border-box;
+}
+
+#bookContentSimple {
+  font-family: "Lora", serif;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  height: 100%;
+  column-gap: 40px;
+  column-fill: auto;
+  text-align: justify;
+  word-break: break-word;
+  color: var(--text-main);
+  backface-visibility: hidden;
+}
+
+#viewportSimple.scroll-mode {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 20px 50px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg-main);
+}
+
+#viewportSimple.scroll-mode #bookContentSimple {
+  column-width: auto !important;
+  column-gap: normal;
+  height: auto;
+  transform: none !important;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+#bookContentSimple p {
+  text-indent: 2.5rem;
+  margin-bottom: 1.2rem;
+  margin-inline: 20px;
+}
+
+#bookContentSimple h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 2.2rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  text-align: center;
+  column-span: all;
+}
+
+#bookContentSimple p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.5em;
+  line-height: 1;
+  font-family: "Playfair Display", serif;
+  color: var(--accent);
+  padding-right: 8px;
+  margin-top: -5px;
+}
+
+.tap-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  z-index: 5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tap-zone:hover {
+  opacity: 1;
+}
+.tap-zone i {
+  font-size: 3rem;
+  color: var(--border);
+}
+.tap-zone.left {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 20px;
+}
+.tap-zone.right {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 20px;
+}
+.animate__animated.book-anim {
+  --animate-duration: 0.35s;
+}

@@ -92,3 +92,14 @@ export const getStoryWithContent = async (id) => {
 
   return result;
 };
+
+export const getRandomStoryId = async () => {
+  // Puxamos apenas a coluna "id" de todas as histórias para economizar memória e banda
+  const { data, error } = await supabase.from("stories").select("id");
+
+  if (error || !data || data.length === 0) return null;
+
+  // Sorteia um índice com base no total de histórias
+  const randomIndex = Math.floor(Math.random() * data.length);
+  return data[randomIndex].id;
+};
