@@ -27,7 +27,7 @@ header.reader-header {
   padding: 1rem 2rem;
   background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border);
-  z-index: 1; /* <-- Aumentado para 1000 */
+  z-index: 1000; /* <-- Aumentado para 1000 */
   margin: 0;
 }
 
@@ -129,7 +129,7 @@ footer.reader-footer {
   flex-direction: column;
   gap: 20px;
   box-shadow: var(--shadow);
-  z-index: -1;
+  z-index: 1000;
   min-width: 320px;
 }
 .settings-panel.active {
