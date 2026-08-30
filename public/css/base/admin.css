@@ -4,9 +4,8 @@
 @import url('../components/admin/layout.css');
 @import url('../components/admin/sidebar.css');
 @import url('../components/admin/tables.css');
-
-/* 2. Importa estilos específicos de PÁGINAS (se necessário carregar globalmente) */
 @import url('../pages/admin/dashboard.css');
+@import url('../components/toast.css');
 
 /* CSS Responsivo Geral do Admin */
 @media (max-width: 900px) {

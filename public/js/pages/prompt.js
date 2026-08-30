@@ -2,7 +2,7 @@
 
 class PromptGenerator {
   constructor() {
-    this.STORAGE_KEY = "Rimufic_Data_v3";
+    this.STORAGE_KEY = "@RimuFic:SavedPrompts";
     this.currentPromptId = null;
 
     // Aguarda o DOM carregar completamente antes de iniciar
@@ -104,7 +104,7 @@ class PromptGenerator {
       this.ui.outputDiv.innerHTML = novoConteudo;
 
       this.ui.editorToolbar.style.display = "flex";
-      this.showToast("Prompt gerado com sucesso!", "success", "ph-check");
+      showToast("Prompt gerado com sucesso!", "success", "ph-check");
 
       this.ui.btnGenerate.innerHTML = `<i class="ph ph-magic-wand"></i> Gerar Prompt`;
       this.ui.btnGenerate.style.opacity = "1";
@@ -148,12 +148,12 @@ class PromptGenerator {
   saveCurrentPrompt(showNotify = true) {
     const data = this.getFormData();
     if (!data.universo || !data.personagemA) {
-      return this.showToast("Preencha os campos vitais.", "error", "ph-warning");
+      return showToast("Preencha os campos vitais.", "error", "ph-warning");
     }
 
     const htmlContent = this.ui.outputDiv.innerHTML.trim();
     if (!htmlContent || this.ui.outputDiv.querySelector(".empty-state")) {
-      return this.showToast("Gere antes de salvar.", "error");
+      return showToast("Gere antes de salvar.", "error", "ph-warning");
     }
 
     const savedItem = {
@@ -173,7 +173,7 @@ class PromptGenerator {
     this.currentPromptId = savedItem.id;
 
     if (showNotify) {
-      this.showToast("Prompt Salvo!", "success", "ph-floppy-disk");
+      showToast("Prompt Salvo!", "success", "ph-floppy-disk");
       this.renderSavedList();
     }
   }
@@ -243,7 +243,7 @@ class PromptGenerator {
 
       this.ui.outputDiv.innerHTML = item.promptGerado || "";
       this.ui.editorToolbar.style.display = "flex";
-      this.showToast("Carregado.", "info", "ph-download");
+  showToast("Carregado.", "info", "ph-download");
     }
   }
 
@@ -263,13 +263,13 @@ class PromptGenerator {
     this.currentPromptId = null;
     this.ui.outputDiv.innerHTML = `<div class="empty-state"><i class="ph ph-sparkle"></i><p>Preencha os dados e clique em "Gerar".</p></div>`;
     this.ui.editorToolbar.style.display = "none";
-    if (show) this.showToast("Limpo", "info", "ph-arrows-clockwise");
+    if (show) showToast("Limpo", "info", "ph-arrows-clockwise");
   }
 
   copyPrompt() {
     navigator.clipboard
       .writeText(this.ui.outputDiv.innerText)
-      .then(() => this.showToast("Copiado!", "success", "ph-copy"));
+      .then(() => showToast("Copiado!", "success", "ph-copy"));
   }
 
   formatText(e, cmd, val = null) {
@@ -299,15 +299,6 @@ class PromptGenerator {
     }
   }
 
-  showToast(msg, type, icon) {
-    if (!this.ui.toastContainer) return;
-    const t = document.createElement("div");
-    t.className = `toast ${type}`;
-    t.innerHTML = `<i class="ph ${icon}"></i> ${msg}`;
-    this.ui.toastContainer.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-  }
-
   escapeHTML(str) {
     return str.replace(
       /[&<>'"]/g,
@@ -315,8 +306,6 @@ class PromptGenerator {
     );
   }
 
-  // Mapeia os métodos da classe para o objeto global (window)
-  // para que o HTML consiga disparar as funções pelos "onclick"
   exposeToWindow() {
     window.formatText = (e, cmd, val) => this.formatText(e, cmd, val);
     window.copyPrompt = () => this.copyPrompt();
@@ -328,6 +317,4 @@ class PromptGenerator {
     window.toggleAdvanced = () => this.toggleAdvanced();
   }
 }
-
-// Inicia a aplicação
 const promptApp = new PromptGenerator();

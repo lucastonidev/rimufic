@@ -15,8 +15,8 @@ export class UserAPI {
       body: JSON.stringify(userData),
     });
   }
-
-  static async ban(id) {
+  
+  static async delete(id) {
     return await fetch(`/api/v1/admin/users/${id}`, {
       method: "DELETE",
     });

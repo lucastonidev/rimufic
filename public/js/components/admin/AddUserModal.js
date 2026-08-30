@@ -28,13 +28,13 @@ export class AddUserModal {
       const result = await response.json();
 
       if (response.ok) {
-        alert("✨ " + result.message);
+        showToast("Usuário adicionado com sucesso!", "success", "ph-check-circle");
         window.location.reload();
       } else {
-        alert("Erro: " + result.message);
+        showToast(result.message || "Falha ao adicionar usuário. Tente novamente.", "error", "ph-x-circle");
       }
     } catch (err) {
-      alert("Erro ao conectar com o servidor.");
+      showToast("Erro ao conectar com o servidor.", "error", "ph-x-circle");
     } finally {
       this.setLoading(btn, false, "Enviar Convite");
     }

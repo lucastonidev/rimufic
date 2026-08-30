@@ -87,8 +87,8 @@
                         </button>
                       
                         <% if (membro.id !==user.id) { %>
-                          <button class="btn-action delete" onclick="window.openBanModal('<%= membro.id %>')" title="Banir Usuário">
-                            <i class="ph ph-prohibit"></i>
+                          <button class="btn-action delete" onclick="window.openDeleteModal('<%= membro.id %>')" title="Excluir Usuário">
+                            <i class="ph ph-trash"></i>
                           </button>
                           <% } %>
                       </div>
@@ -192,25 +192,25 @@
     </div>
   </div>
 
-  <!-- Modal Confirmar Banimento -->
-  <div class="modal-overlay" id="modalBanUser">
+  <!-- Modal Confirmar exclusão -->
+  <div class="modal-overlay" id="modalDeleteUser">
     <div class="modal-content glass" style="border-color: rgba(239, 68, 68, 0.3);">
-      <button class="close-modal" onclick="closeModal('modalBanUser')"><i class="ph ph-x"></i></button>
+      <button class="close-modal" onclick="closeModal('modalDeleteUser')"><i class="ph ph-x"></i></button>
       <div class="modal-header">
         <i class="ph ph-warning-octagon" style="font-size: 3rem; color: var(--danger); margin-bottom: 10px;"></i>
-        <h2>Banir Usuário</h2>
-        <p>Tem certeza que deseja banir este usuário? Ele perderá acesso imediato à plataforma.</p>
+        <h2>Excluir Usuário</h2>
+        <p>Tem certeza que deseja excluir este usuário? Esta ação é irreversível.</p>
       </div>
       <div class="modal-body">
         <div class="form-group">
           <label>Motivo (Opcional)</label>
           <textarea class="form-control" rows="3" placeholder="Descreva o motivo da punição..."></textarea>
         </div>
-        <input type="hidden" id="banUserId">
+        <input type="hidden" id="deleteUserId">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-outline" onclick="closeModal('modalBanUser')">Cancelar</button>
-        <button type="button" class="btn-danger" onclick="submitBan()">Sim, Banir Usuário</button>
+        <button type="button" class="btn-outline" onclick="closeModal('modalDeleteUser')">Cancelar</button>
+        <button type="button" class="btn-danger" onclick="submitDelete()">Sim, Excluir Usuário</button>
       </div>
     </div>
   </div>

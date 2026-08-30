@@ -28,7 +28,7 @@
             <!-- Campo oculto com o ID (Vazio se for criação) -->
             <input type="hidden" id="storyId" value="<%= locals.story ? story.id : '' %>">
 
-            <button class="btn-outline">Salvar Rascunho</button>
+            <button class="btn-outline" id="btnSaveDraft">Salvar Rascunho</button>
             <button class="btn-primary" id="btnPublish">
               <i class="ph ph-paper-plane-tilt"></i>
               <%= locals.story ? 'Atualizar' : 'Publicar' %>

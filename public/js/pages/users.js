@@ -1,17 +1,13 @@
 // public/js/pages/users.js
 import { AddUserModal } from "../components/admin/AddUserModal.js";
 import { EditUserModal } from "../components/admin/EditUserModal.js";
-import { BanUserModal } from "../components/admin/BanUserModal.js";
+import { DeleteUserModal } from "../components/admin/DeleteUserModal.js";
 
 // Instancia os componentes
 const addUserComponent = new AddUserModal();
 const editUserComponent = new EditUserModal();
-const banUserComponent = new BanUserModal();
+const deleteUserComponent = new DeleteUserModal();
 
-// Expõe os métodos de abrir e confirmar modais para o HTML
-// Como estamos usando módulos, as funções não vão automaticamente para o escopo global.
-// Precisamos pendurá-las no objeto 'window' explicitamente.
-window.openEditModal = (id, role, name, email) =>
-  editUserComponent.open(id, role, name, email);
-window.openBanModal = (id) => banUserComponent.open(id);
-window.submitBan = () => banUserComponent.submitBan();
+window.openEditModal = (id, role, name, email) => editUserComponent.open(id, role, name, email);
+window.openDeleteModal = (id) => deleteUserComponent.open(id);
+window.submitDelete = () => deleteUserComponent.submitDelete();

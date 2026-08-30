@@ -2,19 +2,16 @@
 
 class StoryEditor {
   constructor() {
-    // 1. Mapeamos os elementos da tela uma única vez
     this.cacheElements();
-
-    // 2. Iniciamos os escutadores de eventos
     this.bindEvents();
-
-    // 3. Configuramos os comportamentos mágicos do editor
     this.setupEditor();
+    this.loadDraft();
   }
 
   cacheElements() {
     // Botões e Formulário
     this.btnPublish = document.getElementById("btnPublish");
+    this.btnDraft = document.getElementById("btnDraft");
     this.storyIdInput = document.getElementById("storyId");
     this.titleInput = document.getElementById("title");
     this.authorInput = document.getElementById("author");
@@ -44,30 +41,23 @@ class StoryEditor {
   }
 
   bindEvents() {
-    // Delega o envio para a função handlePublish
     if (this.btnPublish) {
       this.btnPublish.addEventListener("click", () => this.handlePublish());
+    }
+    if (this.btnDraft) {
+      this.btnDraft.addEventListener("click", () => this.saveDraft());
     }
   }
 
   setupEditor() {
     if (!this.editorArea) return;
 
-    // Instrui o navegador a usar <p> em vez de <div> quando o usuário der "Enter"
     document.execCommand("defaultParagraphSeparator", false, "p");
-
-    // Escuta o que o usuário digita
     this.editorArea.addEventListener("input", () => this.handleEditorInput());
 
-    // NOVO: Intercepta o "Colar" para limpar formatações do Word/Google Docs
     this.editorArea.addEventListener("paste", (e) => {
-      // 1. Impede o comportamento padrão de colar (que traria o CSS sujo)
       e.preventDefault();
-
-      // 2. Pega apenas o texto puro (sem formatação) da área de transferência
       const text = (e.originalEvent || e).clipboardData.getData("text/plain");
-
-      // 3. Insere esse texto puro onde o cursor do usuário estiver piscando
       document.execCommand("insertText", false, text);
     });
   }
@@ -75,7 +65,6 @@ class StoryEditor {
   // ==========================================
   // MÉTODOS DE INTERFACE (ABAS E IMAGENS)
   // ==========================================
-
   switchTab(tabId, btnElement) {
     this.tabPanes.forEach((pane) => pane.classList.remove("active"));
     this.tabBtns.forEach((btn) => btn.classList.remove("active"));
@@ -91,12 +80,13 @@ class StoryEditor {
       const file = input.files[0];
       const maxSizeInMB = 4;
 
-      // Trava no Front-End (4MB)
       if (file.size > maxSizeInMB * 1024 * 1024) {
-        alert(
-          `A imagem selecionada é muito pesada (${(file.size / (1024 * 1024)).toFixed(2)} MB). Escolha um arquivo de até ${maxSizeInMB} MB.`,
+        showToast(
+          `Imagem muito pesada. Escolha um arquivo de até ${maxSizeInMB} MB.`,
+          "error",
+          "ph-warning-circle",
         );
-        input.value = ""; // Limpa a seleção
+        input.value = "";
         return;
       }
 
@@ -165,8 +155,6 @@ class StoryEditor {
   }
 
   handleEditorInput() {
-    // Se o usuário começar a digitar texto "solto" (sem tag HTML),
-    // envolvemos num <p> na hora para ativar a Letra Capitular do CSS
     if (this.editorArea.innerHTML.length > 0 && !this.editorArea.innerHTML.startsWith("<")) {
       const text = this.editorArea.innerHTML;
       this.editorArea.innerHTML = `<p>${text}</p>`;
@@ -177,12 +165,11 @@ class StoryEditor {
       const textNode = this.editorArea.childNodes[0].firstChild || this.editorArea.childNodes[0];
 
       range.selectNodeContents(textNode);
-      range.collapse(false); // false = colapsa para o final
+      range.collapse(false);
       selection.removeAllRanges();
       selection.addRange(range);
     }
 
-    // Limpeza de lixo HTML gerado por navegadores
     if (this.editorArea.innerHTML === "<br>" || this.editorArea.innerHTML === "<p><br></p>") {
       this.editorArea.innerHTML = "";
     }
@@ -190,17 +177,12 @@ class StoryEditor {
 
   formatContentForBackend() {
     let htmlBruto = this.editorArea.innerHTML;
-
-    // 1. Remove tags <span> e <div> desnecessárias
     let htmlLimpo = htmlBruto.replace(/<\/?span[^>]*>/gi, "");
-
-    // 2. Padroniza tags de títulos inseridas nativamente
     htmlLimpo = htmlLimpo.replace(
       /<h[1-3]>/gi,
       "<h2 style=\"text-align: center; font-family: 'Playfair Display', serif; color: var(--accent); margin-bottom: 2rem;\">",
     );
     htmlLimpo = htmlLimpo.replace(/<\/h[1-3]>/gi, "</h2>");
-
     return htmlLimpo;
   }
 
@@ -220,13 +202,13 @@ class StoryEditor {
     const content = this.formatContentForBackend();
 
     if (!title) {
-      alert("Por favor, preencha o Título da obra.");
+      showToast("Por favor, preencha o Título da obra.", "error", "ph-warning-circle");
       this.switchTab("tabInfo", document.getElementById("btnTabInfo"));
       return;
     }
 
     if (!content || content === "<br>") {
-      alert("O conteúdo da história não pode estar vazio.");
+      showToast("O conteúdo da história não pode estar vazio.", "error", "ph-warning-circle");
       return;
     }
 
@@ -258,20 +240,23 @@ class StoryEditor {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        alert(
+        showToast(
           `✨ Obra ${isEditing ? "atualizada" : "sincronizada"} com sucesso no GitHub e Banco!`,
+          "success",
+          "ph-check-circle",
         );
         window.location.href = "/admin/stories";
       } else {
-        alert(
-          `Erro ao ${isEditing ? "atualizar" : "publicar"}: ` +
-            (result.message || "Tente novamente."),
+        showToast(
+          result.message || "Falha ao processar os dados. Tente novamente.",
+          "error",
+          "ph-x-circle",
         );
         this.resetPublishButton(isEditing);
       }
     } catch (err) {
       console.error("Erro de rede:", err);
-      alert(`Erro de conexão ao ${isEditing ? "atualizar" : "publicar"}.`);
+      showToast(`Erro de conexão ao ${isEditing ? "atualizar" : "publicar"}.`, "error", "ph-plugs");
       this.resetPublishButton(isEditing);
     }
   }
@@ -279,6 +264,49 @@ class StoryEditor {
   resetPublishButton(isEditing) {
     this.btnPublish.disabled = false;
     this.btnPublish.innerHTML = `<i class="ph ph-paper-plane-tilt"></i> ${isEditing ? "Atualizar" : "Publicar"}`;
+  }
+
+  saveDraft() {
+    const draftData = {
+      title: this.titleInput.value.trim(),
+      author: this.authorInput.value.trim(),
+      genre: this.genreSelect.value,
+      synopsis: this.synopsisTextarea.value.trim(),
+      coverUrl: this.coverUrlInput.value.trim(),
+      content: this.formatContentForBackend(),
+    };
+
+    localStorage.setItem("@rimufic:draft", JSON.stringify(draftData));
+    showToast("Rascunho salvo localmente em seu navegador.", "info", "ph-floppy-disk");
+  }
+
+  loadDraft() {
+    // Só carrega rascunho se for uma "Nova Obra" (Sem ID)
+    if (this.storyIdInput && this.storyIdInput.value.trim() !== "") return;
+
+    const draft = localStorage.getItem("@rimufic:draft");
+    if (draft) {
+      try {
+        const data = JSON.parse(draft);
+        if (this.titleInput && data.title) this.titleInput.value = data.title;
+        if (this.authorInput && data.author) this.authorInput.value = data.author;
+        if (this.genreSelect && data.genre) this.genreSelect.value = data.genre;
+        if (this.synopsisTextarea && data.synopsis) this.synopsisTextarea.value = data.synopsis;
+
+        if (this.coverUrlInput && data.coverUrl) {
+          this.coverUrlInput.value = data.coverUrl;
+          this.previewImageUrl(data.coverUrl);
+        }
+
+        if (this.editorArea && data.content && data.content !== "<br>") {
+          this.editorArea.innerHTML = data.content;
+        }
+
+        showToast("Rascunho anterior recuperado.", "info", "ph-magic-wand");
+      } catch (e) {
+        console.error("Erro ao carregar o rascunho:", e);
+      }
+    }
   }
 }
 
