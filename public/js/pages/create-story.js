@@ -58,6 +58,18 @@ class StoryEditor {
 
     // Escuta o que o usuário digita
     this.editorArea.addEventListener("input", () => this.handleEditorInput());
+
+    // NOVO: Intercepta o "Colar" para limpar formatações do Word/Google Docs
+    this.editorArea.addEventListener("paste", (e) => {
+      // 1. Impede o comportamento padrão de colar (que traria o CSS sujo)
+      e.preventDefault();
+
+      // 2. Pega apenas o texto puro (sem formatação) da área de transferência
+      const text = (e.originalEvent || e).clipboardData.getData("text/plain");
+
+      // 3. Insere esse texto puro onde o cursor do usuário estiver piscando
+      document.execCommand("insertText", false, text);
+    });
   }
 
   // ==========================================
@@ -109,8 +121,7 @@ class StoryEditor {
       this.urlPreviewImg.onerror = () => {
         this.urlPreviewImg.style.display = "none";
         this.urlPlaceholderText.style.display = "block";
-        this.urlPlaceholderText.innerText =
-          "URL inválida ou imagem inacessível.";
+        this.urlPlaceholderText.innerText = "URL inválida ou imagem inacessível.";
       };
     } else {
       this.urlPreviewImg.style.display = "none";
@@ -144,10 +155,7 @@ class StoryEditor {
         <p>Foi então que o cheiro mudou. A fragrância úmida de terra e folhas verdes foi substituída por um odor acre de fumaça e enxofre...</p>
     `;
 
-    if (
-      this.editorArea.innerHTML.trim() === "" ||
-      this.editorArea.innerHTML === "<br>"
-    ) {
+    if (this.editorArea.innerHTML.trim() === "" || this.editorArea.innerHTML === "<br>") {
       this.editorArea.innerHTML = templateHTML;
     } else {
       this.editorArea.innerHTML +=
@@ -159,19 +167,14 @@ class StoryEditor {
   handleEditorInput() {
     // Se o usuário começar a digitar texto "solto" (sem tag HTML),
     // envolvemos num <p> na hora para ativar a Letra Capitular do CSS
-    if (
-      this.editorArea.innerHTML.length > 0 &&
-      !this.editorArea.innerHTML.startsWith("<")
-    ) {
+    if (this.editorArea.innerHTML.length > 0 && !this.editorArea.innerHTML.startsWith("<")) {
       const text = this.editorArea.innerHTML;
       this.editorArea.innerHTML = `<p>${text}</p>`;
 
       const selection = window.getSelection();
       const range = document.createRange();
 
-      const textNode =
-        this.editorArea.childNodes[0].firstChild ||
-        this.editorArea.childNodes[0];
+      const textNode = this.editorArea.childNodes[0].firstChild || this.editorArea.childNodes[0];
 
       range.selectNodeContents(textNode);
       range.collapse(false); // false = colapsa para o final
@@ -180,10 +183,7 @@ class StoryEditor {
     }
 
     // Limpeza de lixo HTML gerado por navegadores
-    if (
-      this.editorArea.innerHTML === "<br>" ||
-      this.editorArea.innerHTML === "<p><br></p>"
-    ) {
+    if (this.editorArea.innerHTML === "<br>" || this.editorArea.innerHTML === "<p><br></p>") {
       this.editorArea.innerHTML = "";
     }
   }
@@ -247,9 +247,7 @@ class StoryEditor {
     }
 
     try {
-      const url = isEditing
-        ? `/api/v1/admin/stories/${storyId}`
-        : "/api/v1/admin/stories";
+      const url = isEditing ? `/api/v1/admin/stories/${storyId}` : "/api/v1/admin/stories";
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
