@@ -1,0 +1,118 @@
+/* public/css/components/reader/PdfReader.css */
+
+.pdf-reader-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: rgba(18, 12, 24, 0.7);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.pdf-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background: rgba(25, 15, 35, 0.95);
+  border-bottom: 1px solid var(--glass-border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pdf-controls-left,
+.pdf-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main, #E5E7EB);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pdf-btn:hover:not(:disabled) {
+  background: rgba(157, 78, 221, 0.25);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.pdf-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pdf-page-display,
+.pdf-zoom-display {
+  font-size: 0.9rem;
+  color: var(--text-muted, #9CA3AF);
+  min-width: 65px;
+  text-align: center;
+  user-select: none;
+}
+
+.pdf-page-display span {
+  color: var(--accent, #9D4EDD);
+  font-weight: 600;
+}
+
+/* Área do Canvas */
+.pdf-canvas-wrapper {
+  position: relative;
+  min-height: 550px;
+  max-height: 85vh;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: #0E0914;
+}
+
+#pdfCanvas {
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  transition: transform 0.15s ease-out;
+}
+
+/* Spinner animado enquanto o PDF carrega */
+.pdf-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent, #9D4EDD);
+  font-size: 1rem;
+}
+
+.pdf-loader i {
+  font-size: 2.5rem;
+}
+
+@media (max-width: 600px) {
+  .pdf-toolbar {
+    justify-content: center;
+  }
+  .pdf-canvas-wrapper {
+    padding: 0.5rem;
+    min-height: 400px;
+  }
+}

@@ -3,76 +3,236 @@
 
 <head>
   <%- include('partials/head') %>
-    <link rel="stylesheet" href="/css/pages/login.css">
-    <title>Entrar - Rimufic</title>
+  <link rel="stylesheet" href="/css/pages/login.css">
+  <title>Entrar no Grimório - Rimufic</title>
 </head>
 
 <body>
-  <!-- Podemos ou não exibir o header público aqui. 
-         Geralmente páginas de login são "limpas" para manter o foco. -->
-  <a href="/" class="brand back-link">
+  <a href="/" class="brand back-link" title="Retornar à página inicial">
     <i class="ph ph-arrow-left"></i> Voltar ao Início
   </a>
 
-  <main class="login-container">
+  <main class="login-wrapper">
     <div class="login-card glass">
-      <div class="login-header">
-        <div class="brand-logo">
-          <i class="ph ph-book-open-text"></i>
+      
+      <!-- LADO ESQUERDO: BRANDING, INFORMAÇÕES & ANIMAÇÃO MÁGICA -->
+      <aside class="login-brand-panel">
+        <div class="brand-particles">
+          <span class="particle p-1">✦</span>
+          <span class="particle p-2">✧</span>
+          <span class="particle p-3">✦</span>
+          <span class="particle p-4">✧</span>
         </div>
-        <h1>O Grimório</h1>
-        <p>Identifique-se para acessar o acervo mágico.</p>
-      </div>
 
-      <form action="/login" method="POST" class="login-form">
-        <div class="form-group">
-          <label for="email">E-mail Mágico</label>
-          <div class="input-icon-wrapper">
-            <i class="ph ph-envelope-simple"></i>
-            <input type="email" id="email" name="email" class="form-control" placeholder="mago@rimufic.com" required>
+        <div class="brand-visual">
+          <div class="magic-circle"></div>
+          
+          <!-- Ilustração Vetorial do Grimório Flutuante -->
+          <div class="floating-book">
+            <svg class="book-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bookCoverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#9D4EDD"/>
+                  <stop offset="50%" stop-color="#7B2CBF"/>
+                  <stop offset="100%" stop-color="#3C096C"/>
+                </linearGradient>
+                <linearGradient id="pageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#F3E8FF"/>
+                  <stop offset="100%" stop-color="#D8B4FE"/>
+                </linearGradient>
+                <filter id="magicGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- Aura de Luz Mística -->
+              <circle cx="60" cy="60" r="46" fill="rgba(157, 78, 221, 0.25)" filter="url(#magicGlow)"/>
+
+              <!-- Capa Externa do Livro -->
+              <path d="M18 78C18 78 36 68 60 74C84 68 102 78 102 78V36C102 36 84 26 60 32C36 26 18 36 18 36V78Z" fill="url(#bookCoverGrad)" stroke="#C77DFF" stroke-width="2.5" stroke-linejoin="round"/>
+              
+              <!-- Lombada Central -->
+              <line x1="60" y1="32" x2="60" y2="74" stroke="#E0AAFF" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Páginas Mágicas Abertas -->
+              <path d="M22 73C22 73 38 65 59 70V30C38 25 22 33 22 33V73Z" fill="url(#pageGrad)"/>
+              <path d="M98 73C98 73 82 65 61 70V30C82 25 98 33 98 33V73Z" fill="url(#pageGrad)"/>
+
+              <!-- Linhas de Runas Escritas nas Páginas -->
+              <line x1="28" y1="42" x2="52" y2="40" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="28" y1="50" x2="50" y2="48" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="28" y1="58" x2="48" y2="56" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+
+              <line x1="68" y1="40" x2="92" y2="42" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="70" y1="48" x2="92" y2="50" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="72" y1="56" x2="92" y2="58" stroke="#7B2CBF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- Joia / Selo no Centro Superior -->
+              <polygon points="60,20 65,27 60,34 55,27" fill="#E0AAFF" stroke="#FFFFFF" stroke-width="1.2"/>
+            </svg>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="password">Palavra-passe</label>
-          <div class="input-icon-wrapper">
-            <i class="ph ph-lock-key"></i>
-            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
-            <button type="button" class="btn-toggle-pass" aria-label="Mostrar senha">
-              <i class="ph ph-eye"></i>
+        <div class="brand-text">
+          <div class="brand-badge">
+            <i class="ph-fill ph-sparkle"></i> Acesso Restrito
+          </div>
+          <h2>Rimufic</h2>
+          <p class="brand-tagline">
+            O refúgio onde lendas esquecidas, fábulas e universos ganham vida em cada palavra.
+          </p>
+        </div>
+
+        <div class="brand-quote">
+          <i class="ph-fill ph-quotes"></i>
+          <span>"Toda história guarda um encanto à espera de quem saiba lê-la."</span>
+        </div>
+      </aside>
+
+      <!-- LADO DIREITO: FORMULÁRIOS & CONTROLES DE ACESSO -->
+      <section class="login-form-panel">
+        <header class="panel-header">
+          <div class="panel-icon">
+            <i class="ph ph-lock-key" id="headerIcon"></i>
+          </div>
+          <h1 id="panelTitle">Entrar no Grimório</h1>
+          <p id="panelSubtitle">Identifique-se com suas credenciais de guardião.</p>
+        </header>
+
+        <!-- Alertas de Erro ou Sucesso Estilizados -->
+        <% if (locals.error) { %>
+          <div class="alert-box alert-error animate__animated animate__shakeX" role="alert">
+            <i class="ph-fill ph-warning-circle"></i>
+            <div class="alert-content">
+              <strong>Acesso Negado</strong>
+              <span><%= error %></span>
+            </div>
+          </div>
+        <% } %>
+
+        <% if (locals.success) { %>
+          <div class="alert-box alert-success animate__animated animate__fadeIn" role="status">
+            <i class="ph-fill ph-check-circle"></i>
+            <div class="alert-content">
+              <strong>Tudo Certo</strong>
+              <span><%= success %></span>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- FORMULÁRIO 1: LOGIN -->
+        <form id="formLogin" action="/login" method="POST" class="auth-form">
+          <div class="form-group">
+            <label for="email">E-mail do Guardião</label>
+            <div class="input-icon-wrapper">
+              <i class="ph ph-envelope-simple"></i>
+              <input type="email" id="email" name="email" class="form-control" placeholder="guardiao@rimufic.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label for="password">Palavra-passe</label>
+            </div>
+            <div class="input-icon-wrapper">
+              <i class="ph ph-key"></i>
+              <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-pass" aria-label="Mostrar ou ocultar senha" title="Mostrar/ocultar senha">
+                <i class="ph ph-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" name="remember" checked>
+              <span>Permanecer conectado</span>
+            </label>
+            <button type="button" id="btnShowForgot" class="link-btn">Esqueci minha senha</button>
+          </div>
+
+          <button type="submit" class="btn-primary btn-submit">
+            <span>Desbloquear Acesso</span>
+            <i class="ph ph-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- FORMULÁRIO 2: RECUPERAÇÃO DE SENHA -->
+        <form id="formForgot" action="/forgot-password" method="POST" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="forgotEmail">E-mail Cadastrado</label>
+            <div class="input-icon-wrapper">
+              <i class="ph ph-envelope-simple"></i>
+              <input type="email" id="forgotEmail" name="email" class="form-control" placeholder="seu-email@exemplo.com" required>
+            </div>
+            <small class="field-hint">Enviaremos um link de recuperação diretamente para a sua caixa de entrada.</small>
+          </div>
+
+          <button type="submit" class="btn-primary btn-submit">
+            <span>Enviar Link de Recuperação</span>
+            <i class="ph ph-paper-plane-tilt"></i>
+          </button>
+
+          <div class="form-footer-action">
+            <button type="button" id="btnBackToLogin" class="link-btn secondary">
+              <i class="ph ph-arrow-left"></i> Lembrou a palavra-passe? Voltar ao Login
             </button>
           </div>
-        </div>
+        </form>
 
-        <div class="form-options">
-          <label class="remember-me">
-            <input type="checkbox" name="remember">
-            <span>Manter conectado</span>
-          </label>
-          <a href="#" class="forgot-pass">Esqueci a senha</a>
-        </div>
+      </section>
 
-        <button type="submit" class="btn-primary btn-login">
-          Desbloquear Acesso <i class="ph ph-key"></i>
-        </button>
-      </form>
     </div>
   </main>
 
   <script>
-    // Mágica para mostrar/ocultar a senha
-    document.querySelector('.btn-toggle-pass').addEventListener('click', function () {
-      const passInput = document.getElementById('password');
-      const icon = this.querySelector('i');
+    // 1. Mostrar/ocultar senha
+    const btnToggle = document.querySelector('.btn-toggle-pass');
+    if (btnToggle) {
+      btnToggle.addEventListener('click', function () {
+        const passInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+        if (passInput.type === 'password') {
+          passInput.type = 'text';
+          icon.className = 'ph ph-eye-slash';
+        } else {
+          passInput.type = 'password';
+          icon.className = 'ph ph-eye';
+        }
+      });
+    }
 
-      if (passInput.type === 'password') {
-        passInput.type = 'text';
-        icon.classList.replace('ph-eye', 'ph-eye-slash');
-      } else {
-        passInput.type = 'password';
-        icon.classList.replace('ph-eye-slash', 'ph-eye');
-      }
-    });
+    // 2. Alternar entre Login e Esqueci a Senha com transição suave
+    const formLogin = document.getElementById('formLogin');
+    const formForgot = document.getElementById('formForgot');
+    const btnShowForgot = document.getElementById('btnShowForgot');
+    const btnBackToLogin = document.getElementById('btnBackToLogin');
+    const panelTitle = document.getElementById('panelTitle');
+    const panelSubtitle = document.getElementById('panelSubtitle');
+    const headerIcon = document.getElementById('headerIcon');
+
+    if (btnShowForgot) {
+      btnShowForgot.addEventListener('click', () => {
+        formLogin.style.display = 'none';
+        formForgot.style.display = 'flex';
+        formForgot.classList.add('animate__animated', 'animate__fadeIn');
+        panelTitle.innerText = 'Recuperar Acesso';
+        panelSubtitle.innerText = 'Informe o e-mail associado à sua conta de guardião.';
+        if (headerIcon) headerIcon.className = 'ph ph-paper-plane-tilt';
+      });
+    }
+
+    if (btnBackToLogin) {
+      btnBackToLogin.addEventListener('click', () => {
+        formForgot.style.display = 'none';
+        formLogin.style.display = 'flex';
+        formLogin.classList.add('animate__animated', 'animate__fadeIn');
+        panelTitle.innerText = 'Entrar no Grimório';
+        panelSubtitle.innerText = 'Identifique-se com suas credenciais de guardião.';
+        if (headerIcon) headerIcon.className = 'ph ph-lock-key';
+      });
+    }
   </script>
 </body>
 

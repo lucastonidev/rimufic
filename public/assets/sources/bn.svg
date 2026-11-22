@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#2B1810"/>
+  <!-- Brasão Histórico da Fundação Biblioteca Nacional -->
+  <path d="M24 10L36 17V26C36 33 24 38 24 38C24 38 12 33 12 26V17L24 10Z" fill="#4A2818" stroke="#E0A96D" stroke-width="2"/>
+  <!-- Monograma BN -->
+  <path d="M19 19V29M19 19H23C24.5 19 25.5 20 25.5 21.5C25.5 23 24.5 24 23 24H19M23 24H24C25.5 24 26.5 25 26.5 26.5C26.5 28 25.5 29 24 29H19" stroke="#E0A96D" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M28 29V19L33 29V19" stroke="#E0A96D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

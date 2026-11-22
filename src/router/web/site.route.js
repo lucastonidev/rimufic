@@ -14,6 +14,9 @@ import { renderLibrary } from "../../controllers/web/library.controller.js";
 import {
   renderLogin,
   login,
+  forgotPassword,
+  renderResetPassword,
+  resetPassword,
   logout,
 } from "../../controllers/auth.controller.js";
 
@@ -35,6 +38,9 @@ router.get("/prompt", (req, res) => {
 // Rotas de Autenticação
 router.get("/login", renderLogin);
 router.post("/login", loginLimiter, login);
+router.post("/forgot-password", loginLimiter, forgotPassword);
+router.get("/reset-password", renderResetPassword);
+router.post("/reset-password", loginLimiter, resetPassword);
 router.get("/logout", logout);
 
 export { router as siteRoutes };

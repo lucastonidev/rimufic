@@ -16,5 +16,9 @@ export const storySchema = z.object({
     .url("A URL da capa deve ser válida.")
     .optional()
     .or(z.literal("")),
-  content: z.string().min(10, "A história precisa ter conteúdo."),
+  content: z.string().optional().default(""),
+  format: z.enum(["text", "pdf"]).optional().default("text"),
+  pdfUrl: z.string().optional().or(z.literal("")),
+  sourceType: z.string().optional().default("original"),
+  sourceUrl: z.string().optional().or(z.literal("")),
 });

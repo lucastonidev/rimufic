@@ -1,0 +1,182 @@
+/* public/css/pages/error.css */
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-main, #0B0710);
+  background-image:
+    radial-gradient(circle at 50% 20%, rgba(157, 78, 221, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at center, transparent 0%, var(--bg-main, #0B0710) 100%);
+  color: var(--text-main, #F3F4F6);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.error-container {
+  max-width: 580px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ilustração animada do Mascote Mágico */
+.cat-scene {
+  position: relative;
+  width: 220px;
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin: 0 auto 0.5rem;
+}
+
+.cat-walk {
+  width: 140px;
+  height: 120px;
+  animation: catBob 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes catBob {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+.cat-leg-front-left {
+  animation: legWalk1 0.6s ease-in-out infinite alternate;
+  transform-origin: 50px 75px;
+}
+.cat-leg-front-right {
+  animation: legWalk2 0.6s ease-in-out infinite alternate;
+  transform-origin: 65px 75px;
+}
+.cat-leg-back-left {
+  animation: legWalk2 0.6s ease-in-out infinite alternate;
+  transform-origin: 95px 75px;
+}
+.cat-leg-back-right {
+  animation: legWalk1 0.6s ease-in-out infinite alternate;
+  transform-origin: 105px 75px;
+}
+
+@keyframes legWalk1 {
+  0% { transform: rotate(18deg); }
+  100% { transform: rotate(-18deg); }
+}
+
+@keyframes legWalk2 {
+  0% { transform: rotate(-18deg); }
+  100% { transform: rotate(18deg); }
+}
+
+.cat-tail {
+  animation: tailWiggle 1.2s ease-in-out infinite alternate;
+  transform-origin: 110px 65px;
+}
+
+@keyframes tailWiggle {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* Chão místico sob o gato */
+.cat-shadow {
+  width: 110px;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(157, 78, 221, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  margin-top: -6px;
+  animation: shadowPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes shadowPulse {
+  0% { transform: scaleX(1); opacity: 0.6; }
+  100% { transform: scaleX(0.85); opacity: 0.3; }
+}
+
+/* Partículas e estrelas mágicas */
+.magic-sparkle {
+  position: absolute;
+  color: var(--accent, #9D4EDD);
+  font-size: 1rem;
+  animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.s1 { top: 15px; left: 20px; animation-delay: 0.2s; }
+.s2 { top: 30px; right: 25px; animation-delay: 0.8s; font-size: 1.3rem; }
+.s3 { bottom: 35px; right: 15px; animation-delay: 1.4s; }
+
+@keyframes sparkleFloat {
+  0% { transform: translateY(0) scale(0.7); opacity: 0.3; }
+  50% { transform: translateY(-8px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(0.7); opacity: 0.3; }
+}
+
+/* Textos da tela de erro */
+.error-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(157, 78, 221, 0.15);
+  border: 1px solid rgba(157, 78, 221, 0.3);
+  color: var(--accent, #C77DFF);
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.error-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.error-desc {
+  color: var(--text-muted, #9CA3AF);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Botões de navegação */
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.4rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  color: var(--text-main, #F3F4F6);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent, #9D4EDD);
+  color: #FFFFFF;
+}

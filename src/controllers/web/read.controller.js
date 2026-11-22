@@ -3,9 +3,9 @@ import * as webService from "../../services/web.service.js";
 
 export const renderReadStory = async (req, res, next) => {
   try {
-    const { story, htmlContent, readingTime } =
+    const { story, htmlContent, readingTime, isPdf, pdfUrl } =
       await webService.getStoryWithContent(req.params.id);
-    res.render("read", { story, htmlContent, readingTime });
+    res.render("read", { story, htmlContent, readingTime, isPdf, pdfUrl });
   } catch (err) {
     next(err);
   }

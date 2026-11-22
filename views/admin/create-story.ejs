@@ -125,6 +125,51 @@
                       <option value="terror" <%=currentGenre==='terror' ? 'selected' : '' %>>Terror Místico</option>
                   </select>
                 </div>
+
+                <!-- SELO DE FONTE / ACERVO DA OBRA -->
+                <div class="form-group">
+                  <label for="sourceType">Origem / Acervo da Obra</label>
+                  <select id="sourceType" class="form-control">
+                    <% const currentSource = locals.story ? (story.source_type || 'original') : 'original'; %>
+                    <option value="original" <%= currentSource === 'original' ? 'selected' : '' %>>🌟 Original Rimufic (Autor da Comunidade)</option>
+                    <option value="gutenberg" <%= currentSource === 'gutenberg' ? 'selected' : '' %>>📖 Projeto Gutenberg (Domínio Público)</option>
+                    <option value="dominio_publico_mec" <%= currentSource === 'dominio_publico_mec' ? 'selected' : '' %>>🏛️ Domínio Público • MEC (Brasil)</option>
+                    <option value="biblioteca_nacional" <%= currentSource === 'biblioteca_nacional' ? 'selected' : '' %>>🏛️ Fundação Biblioteca Nacional</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="sourceUrl">Link da Obra Original (Opcional)</label>
+                  <input type="url" id="sourceUrl" class="form-control" placeholder="https://www.gutenberg.org/ebooks/..." 
+                    value="<%= locals.story && story.source_url ? story.source_url : '' %>">
+                </div>
+
+                <!-- FORMATO DA OBRA (TEXTO OU PDF) -->
+                <div class="form-group">
+                  <label>Formato de Publicação</label>
+                  <div style="display: flex; gap: 15px; margin-bottom: 8px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text-main);">
+                      <input type="radio" name="formatToggle" value="text" checked onclick="toggleFormatMode('text')" style="accent-color: var(--accent);">
+                      ✍️ Conto / Texto Escrito
+                    </label>
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text-main);">
+                      <input type="radio" name="formatToggle" value="pdf" onclick="toggleFormatMode('pdf')" style="accent-color: var(--accent);">
+                      📚 Livro Digital em PDF
+                    </label>
+                  </div>
+                </div>
+
+                <!-- SELEÇÃO DE ARQUIVO PDF (SE FORMATO PDF ATIVADO) -->
+                <div id="sectionPdfUpload" style="display: none; background: rgba(157, 78, 221, 0.05); padding: 1rem; border-radius: 8px; border: 1px dashed var(--glass-border); margin-bottom: 1rem;">
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label for="pdfFileInput">Enviar Arquivo PDF (até 25MB)</label>
+                    <input type="file" id="pdfFileInput" accept="application/pdf" class="form-control" style="padding: 0.5rem;">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="pdfUrlInput">Ou Link direto do PDF (URL externa)</label>
+                    <input type="url" id="pdfUrlInput" class="form-control" placeholder="https://exemplo.com/livro.pdf">
+                  </div>
+                </div>
             
                 <div class="form-group" style="flex-grow: 1;">
                   <label for="synopsis">Sinopse Curta</label>
@@ -151,6 +196,15 @@
                   <button class="editor-btn" onclick="execCmd('underline')" title="Sublinhado"><i
                       class="ph ph-text-underline"></i></button>
                   <div class="toolbar-divider"></div>
+                  <button class="editor-btn" onclick="formatBlock('h2')" title="Título de Seção (H2)"><i
+                      class="ph ph-text-h-two"></i></button>
+                  <button class="editor-btn" onclick="formatBlock('h3')" title="Subtítulo (H3)"><i
+                      class="ph ph-text-h-three"></i></button>
+                  <button class="editor-btn" onclick="formatBlock('blockquote')" title="Citação / Pergaminho"><i
+                      class="ph ph-quotes"></i></button>
+                  <button class="editor-btn" onclick="insertSceneBreak()" title="Divisor Místico (✧ ✧ ✧)"><i
+                      class="ph ph-sparkle"></i></button>
+                  <div class="toolbar-divider"></div>
                   <button class="editor-btn" onclick="execCmd('justifyLeft')" title="Alinhar à Esquerda"><i
                       class="ph ph-text-align-left"></i></button>
                   <button class="editor-btn" onclick="execCmd('justifyCenter')" title="Centralizar"><i
@@ -160,6 +214,8 @@
                   <div class="toolbar-divider"></div>
                   <button class="editor-btn" onclick="execCmd('insertUnorderedList')" title="Lista"><i
                       class="ph ph-list-bullets"></i></button>
+                  <button class="editor-btn" id="btnZenMode" onclick="toggleZenMode()" title="Modo Zen (Foco em Tela Cheia)"><i
+                      class="ph ph-arrows-out-simple"></i></button>
                   <button class="btn-template" onclick="loadTemplate()" title="Preencher com um modelo de exemplo">
                     <i class="ph ph-magic-wand"></i> <span>Usar Modelo de Escrita</span>
                   </button>
@@ -168,6 +224,20 @@
                 <!-- ContentEditable Area -->
                 <div id="editorArea" class="editor-content" contenteditable="true" spellcheck="false" placeholder="Era uma vez..."><%-
                     locals.rawContent ? rawContent.replace(/\n/g, '<br>' ) : '' %></div>
+
+                <!-- Barra de Status do Editor (Autosave, Palavras e Tempo) -->
+                <footer class="editor-statusbar">
+                  <div class="status-left">
+                    <span id="autosaveStatus" class="status-item autosave-indicator">
+                      <i class="ph ph-cloud-check"></i> Pronto
+                    </span>
+                  </div>
+                  <div class="status-right">
+                    <span id="wordCount" class="status-item">0 palavras</span>
+                    <span class="status-dot">•</span>
+                    <span id="readingTimeEstimate" class="status-item">~0 min de leitura</span>
+                  </div>
+                </footer>
               </section>
             </div>
 

@@ -24,13 +24,17 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
 
-        // Permitir o StPageFlip (cdn.jsdelivr.net) e ícones Phosphor (unpkg)
+        // Permitir o StPageFlip (cdn.jsdelivr.net), PDF.js (cdnjs) e ícones Phosphor (unpkg)
         scriptSrc: [
           "'self'",
           "'unsafe-inline'",
           "https://unpkg.com",
           "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
         ],
+
+        // Permite worker do PDF.js
+        workerSrc: ["'self'", "blob:", "https://cdnjs.cloudflare.com"],
 
         // Permite atributos de evento em linha no HTML (como onclick e onchange)
         scriptSrcAttr: ["'unsafe-inline'"],
@@ -58,7 +62,7 @@ app.use(
         imgSrc: ["'self'", "data:", "https://cdn.jsdelivr.net"],
 
         // Permite que o Axios (ou fetch) se conecte à CDN
-        connectSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
       },
     },
   }),

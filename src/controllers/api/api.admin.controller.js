@@ -59,9 +59,33 @@ export const apiBanUser = async (req, res, next) => {
 // --- OBRAS (API) ---
 export const apiCreateStory = async (req, res, next) => {
   try {
-    const { title, author, genre, synopsis, coverUrl, content } = req.body;
-    if (!title || !content)
-      return next(new AppError("Título e conteúdo são obrigatórios.", 400));
+    const {
+      title,
+      author,
+      genre,
+      synopsis,
+      coverUrl,
+      content,
+      format = "text",
+      pdfUrl,
+      sourceType = "original",
+      sourceUrl,
+    } = req.body;
+
+    const coverFile = req.files?.coverFile?.[0] || req.file;
+    const pdfFile = req.files?.pdfFile?.[0];
+
+    if (!title) {
+      return next(new AppError("O título da obra é obrigatório.", 400));
+    }
+
+    if (format === "pdf" && !pdfFile && (!pdfUrl || !pdfUrl.trim())) {
+      return next(new AppError("Para obras em PDF, selecione o arquivo ou informe o link.", 400));
+    }
+
+    if (format === "text" && (!content || content === "<br>")) {
+      return next(new AppError("O conteúdo da história não pode estar vazio.", 400));
+    }
 
     const { markdownUrl, finalCoverUrl } =
       await storyService.processAndUploadContent(
@@ -71,9 +95,15 @@ export const apiCreateStory = async (req, res, next) => {
         synopsis,
         coverUrl,
         content,
-        req.file,
+        coverFile,
         false,
+        format,
+        pdfFile,
+        pdfUrl,
+        sourceType,
+        sourceUrl,
       );
+
     await storyService.insertStoryToDatabase(
       {
         title,
@@ -82,6 +112,9 @@ export const apiCreateStory = async (req, res, next) => {
         synopsis,
         cover_url: finalCoverUrl,
         content: markdownUrl,
+        source_type: sourceType || "original",
+        source_url: sourceUrl || "",
+        format: format || "text",
         user_id: req.user.id,
       },
       req.cookies.jwt_token,
@@ -97,9 +130,25 @@ export const apiCreateStory = async (req, res, next) => {
 
 export const apiUpdateStory = async (req, res, next) => {
   try {
-    const { title, author, genre, synopsis, coverUrl, content } = req.body;
-    if (!title || !content)
-      return next(new AppError("Título e conteúdo são obrigatórios.", 400));
+    const {
+      title,
+      author,
+      genre,
+      synopsis,
+      coverUrl,
+      content,
+      format = "text",
+      pdfUrl,
+      sourceType = "original",
+      sourceUrl,
+    } = req.body;
+
+    const coverFile = req.files?.coverFile?.[0] || req.file;
+    const pdfFile = req.files?.pdfFile?.[0];
+
+    if (!title) {
+      return next(new AppError("O título da obra é obrigatório.", 400));
+    }
 
     const { markdownUrl, finalCoverUrl } =
       await storyService.processAndUploadContent(
@@ -109,9 +158,15 @@ export const apiUpdateStory = async (req, res, next) => {
         synopsis,
         coverUrl,
         content,
-        req.file,
+        coverFile,
         true,
+        format,
+        pdfFile,
+        pdfUrl,
+        sourceType,
+        sourceUrl,
       );
+
     await storyService.updateStoryInDatabase(
       req.params.id,
       {
@@ -121,6 +176,9 @@ export const apiUpdateStory = async (req, res, next) => {
         synopsis,
         cover_url: finalCoverUrl,
         content: markdownUrl,
+        source_type: sourceType || "original",
+        source_url: sourceUrl || "",
+        format: format || "text",
       },
       req.cookies.jwt_token,
     );

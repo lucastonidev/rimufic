@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <link rel="stylesheet" href="/css/pages/read.css">
+    <link rel="stylesheet" href="/css/components/reader/PdfReader.css">
+    <% if (locals.isPdf) { %>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <% } %>
     <title>Lendo: <%= story.title %> - Rimufic</title>
 </head>
 <body>
@@ -25,8 +29,49 @@
                 <h1><%= story.title %></h1>
                 <p class="story-author">Escrito por <span><%= story.author %></span></p>
     
-                <div class="story-tags">
+                <div class="story-tags" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                     <span class="tag" style="text-transform: capitalize;"><%= story.genre %></span>
+
+                    <!-- SELO VISUAL DE PROCEDÊNCIA / FONTE DA OBRA -->
+                    <% 
+                      const src = story.source_type || 'original';
+                      let srcLabel = 'Original Rimufic';
+                      let srcIcon = '/assets/sources/rimufic.svg';
+                      let srcClass = 'source-badge-original';
+
+                      if (src === 'gutenberg') {
+                        srcLabel = 'Projeto Gutenberg';
+                        srcIcon = '/assets/sources/gutenberg.svg';
+                        srcClass = 'source-badge-gutenberg';
+                      } else if (src === 'dominio_publico_mec') {
+                        srcLabel = 'Domínio Público • MEC';
+                        srcIcon = '/assets/sources/mec.svg';
+                        srcClass = 'source-badge-mec';
+                      } else if (src === 'biblioteca_nacional') {
+                        srcLabel = 'Biblioteca Nacional';
+                        srcIcon = '/assets/sources/bn.svg';
+                        srcClass = 'source-badge-bn';
+                      }
+                    %>
+
+                    <% if (story.source_url) { %>
+                      <a href="<%= story.source_url %>" target="_blank" rel="noopener noreferrer" class="source-badge <%= srcClass %>" title="Acessar acervo original da obra">
+                        <img src="<%= srcIcon %>" alt="" class="source-badge-icon">
+                        <span><%= srcLabel %></span>
+                        <i class="ph ph-arrow-up-right" style="font-size: 0.75rem;"></i>
+                      </a>
+                    <% } else { %>
+                      <span class="source-badge <%= srcClass %>">
+                        <img src="<%= srcIcon %>" alt="" class="source-badge-icon">
+                        <span><%= srcLabel %></span>
+                      </span>
+                    <% } %>
+
+                    <% if (locals.isPdf) { %>
+                      <span class="source-badge" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;">
+                        <i class="ph ph-file-pdf" style="font-size: 1rem;"></i> Livro em PDF
+                      </span>
+                    <% } %>
                 </div>
     
                 <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
@@ -41,12 +86,84 @@
                         <i class="ph ph-calendar"></i>
                         <%= new Date(story.created_at).toLocaleDateString('pt-BR') %>
                     </div>
+                    <!-- Botão de Leitura Offline de Fácil Acesso no Cabeçalho -->
+                    <button class="btn-offline btn-offline-hero" id="btnDownloadOfflineHero"
+                      data-id="<%= story.id %>" 
+                      data-title="<%= story.title %>" 
+                      data-author="<%= story.author %>" 
+                      data-cover="<%= story.cover_url || '' %>" 
+                      data-genre="<%= story.genre %>"
+                      data-is-pdf="<%= locals.isPdf ? 'true' : 'false' %>"
+                      data-content-url="<%= locals.isPdf ? (locals.pdfUrl || '') : (story.content || '') %>"
+                      onclick="toggleOfflineStory(this)" 
+                      title="Baixar para Ler Offline"
+                      style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; background: rgba(157, 78, 221, 0.15); border: 1px solid var(--accent); color: #FFF; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
+                      <i class="ph ph-cloud-arrow-down" style="font-size: 1.1rem; color: var(--accent);"></i>
+                      <span class="btn-offline-text">Salvar Offline</span>
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- LEITOR SUPREMO (HÍBRIDO) -->
-        <section class="supreme-reader-wrapper" id="supremeReader">
+        <!-- ÁREA DO LEITOR -->
+        <% if (locals.isPdf) { %>
+          <!-- LEITOR DIGITAL DE PDF -->
+          <section class="pdf-reader-container" id="containerPdf" data-pdf-url="<%= pdfUrl %>">
+            <header class="pdf-toolbar">
+              <div class="pdf-controls-left">
+                <button class="pdf-btn" id="pdfPrev" title="Página Anterior (←)">
+                  <i class="ph ph-caret-left"></i>
+                </button>
+                <div class="pdf-page-display">
+                  Página <span id="pdfCurrentPage">1</span> de <span id="pdfTotalPages">--</span>
+                </div>
+                <button class="pdf-btn" id="pdfNext" title="Próxima Página (→)">
+                  <i class="ph ph-caret-right"></i>
+                </button>
+              </div>
+
+              <div class="pdf-controls-right">
+                <button class="pdf-btn" id="pdfZoomOut" title="Diminuir Zoom">
+                  <i class="ph ph-magnifying-glass-minus"></i>
+                </button>
+                <div class="pdf-zoom-display" id="pdfZoomDisplay">125%</div>
+                <button class="pdf-btn" id="pdfZoomIn" title="Aumentar Zoom">
+                  <i class="ph ph-magnifying-glass-plus"></i>
+                </button>
+                <button class="pdf-btn" id="pdfFitWidth" title="Ajustar à Tela">
+                  <i class="ph ph-arrows-in-cardinal"></i>
+                </button>
+                <button class="btn-fav pdf-btn" data-id="<%= story.id %>" data-title="<%= story.title %>" 
+                  data-author="<%= story.author %>" data-cover="<%= story.cover_url || '' %>" 
+                  data-genre="<%= story.genre %>" onclick="toggleFav(this)" title="Favoritar Lenda">
+                  <i class="ph ph-heart"></i>
+                </button>
+                <button class="pdf-btn btn-offline" id="btnDownloadOfflinePdf"
+                  data-id="<%= story.id %>" 
+                  data-title="<%= story.title %>" 
+                  data-author="<%= story.author %>" 
+                  data-cover="<%= story.cover_url || '' %>" 
+                  data-genre="<%= story.genre %>"
+                  data-is-pdf="true"
+                  data-content-url="<%= pdfUrl %>"
+                  onclick="toggleOfflineStory(this)" 
+                  title="Baixar para Ler Offline">
+                  <i class="ph ph-cloud-arrow-down"></i>
+                </button>
+              </div>
+            </header>
+
+            <div class="pdf-canvas-wrapper" id="pdfCanvasWrapper">
+              <canvas id="pdfCanvas"></canvas>
+              <div id="pdfLoadingSpinner" class="pdf-loader">
+                <i class="ph ph-circle-notch animate-spin"></i>
+                <span>Despertando páginas do livro...</span>
+              </div>
+            </div>
+          </section>
+        <% } else { %>
+          <!-- LEITOR SUPREMO (HÍBRIDO: REALISTA, PAGINADO E ROLAGEM) -->
+          <section class="supreme-reader-wrapper" id="supremeReader">
             
             <header class="reader-header">
                 <div class="header-title">Boa leitura!</div>
@@ -62,6 +179,20 @@
                         <i class="ph ph-heart"></i>
                     </button>
                     
+                    <!-- Botão de Download Offline -->
+                    <button class="action-btn btn-offline" id="btnDownloadOffline" 
+                      data-id="<%= story.id %>" 
+                      data-title="<%= story.title %>" 
+                      data-author="<%= story.author %>" 
+                      data-cover="<%= story.cover_url || '' %>" 
+                      data-genre="<%= story.genre %>"
+                      data-is-pdf="false"
+                      data-content-url="<%= story.content || '' %>"
+                      onclick="toggleOfflineStory(this)" 
+                      title="Baixar para Ler Offline">
+                      <i class="ph ph-cloud-arrow-down"></i>
+                    </button>
+
                     <button class="action-btn" id="btnSettings" title="Configurações de Leitura">
                         <i class="ph ph-sliders-horizontal"></i>
                     </button>
@@ -155,8 +286,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
 
             <footer class="reader-footer">
                 <div class="progress-bar-container">
@@ -164,11 +293,20 @@
                 </div>
                 <div class="page-info" id="pageInfo">Carregando...</div>
             </footer>
-        </section>
+          </section>
+        <% } %>
     </main>
 
     <script src="/js/components/favorites.js"></script>
+    <script type="module" src="/js/components/offline-manager.js"></script>
     <script src="/js/main.js"></script>
-    <script type="module" src="/js/pages/read.js"></script>
+    <% if (locals.isPdf) { %>
+      <script type="module">
+        import { PdfReader } from '/js/components/reader/PdfReader.js';
+        new PdfReader('containerPdf');
+      </script>
+    <% } else { %>
+      <script type="module" src="/js/pages/read.js"></script>
+    <% } %>
 </body>
 </html>

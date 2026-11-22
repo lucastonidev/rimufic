@@ -56,8 +56,19 @@ export const getStoryWithContent = async (id) => {
   if (error || !story) throw new Error("História não encontrada.");
 
   let htmlContent = "<p>O conteúdo desta lenda se perdeu no tempo...</p>";
+  let isPdf = false;
+  let pdfUrl = null;
+  let readingTime = 1;
 
-  if (story.content && story.content.startsWith("http")) {
+  // Verifica se a obra é um Livro Digital em formato PDF
+  if (
+    story.format === "pdf" ||
+    (story.content && story.content.toLowerCase().includes(".pdf"))
+  ) {
+    isPdf = true;
+    pdfUrl = story.content;
+    readingTime = 20; // Estimativa padrão para livros em PDF
+  } else if (story.content && story.content.startsWith("http")) {
     try {
       const response = await axios.get(story.content);
       const parts = response.data.split("---");
@@ -71,18 +82,22 @@ export const getStoryWithContent = async (id) => {
           "h1",
           "h2",
           "h3",
+          "blockquote",
+          "div",
+          "hr",
+          "span",
         ]),
         allowedAttributes: { "*": ["style", "class", "src", "alt", "href"] },
       });
+
+      const wordsCount = htmlContent.replace(/<[^>]*>?/gm, "").split(/\s+/).length;
+      readingTime = Math.ceil(wordsCount / 200) || 1;
     } catch (e) {
       console.error("Erro ao buscar o texto no GitHub:", e.message);
     }
   }
 
-  const wordsCount = htmlContent.replace(/<[^>]*>?/gm, "").split(/\s+/).length;
-  const readingTime = Math.ceil(wordsCount / 200) || 1;
-
-  const result = { story, htmlContent, readingTime };
+  const result = { story, htmlContent, readingTime, isPdf, pdfUrl };
 
   // 3. Salva o resultado final na memória para o próximo leitor
   cache.stories[id] = {
@@ -112,4 +127,39 @@ export const clearStoryCache = (id) => {
   // Limpa também o cache da página inicial para atualizar os destaques
   cache.home.data = null;
   cache.home.timestamp = 0;
+};
+
+export const searchStories = async (q, genre, sort) => {
+  let query = supabase.from("stories").select("*");
+
+  // Filtro de texto (busca no título, autor ou sinopse)
+  if (q && q.trim()) {
+    const term = `%${q.trim()}%`;
+    query = query.or(`title.ilike.${term},author.ilike.${term},synopsis.ilike.${term}`);
+  }
+
+  // Filtro de gêneros (suporta valor único ou múltiplos checkboxes)
+  if (genre) {
+    if (Array.isArray(genre) && genre.length > 0) {
+      query = query.in("genre", genre);
+    } else if (typeof genre === "string" && genre.trim()) {
+      query = query.eq("genre", genre);
+    }
+  }
+
+  // Ordenação
+  if (sort === "az") {
+    query = query.order("title", { ascending: true });
+  } else {
+    // Padrão: mais recentes primeiro
+    query = query.order("created_at", { ascending: false });
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error("Erro na busca de histórias:", error);
+    throw error;
+  }
+
+  return data || [];
 };

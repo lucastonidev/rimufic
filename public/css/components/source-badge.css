@@ -1,0 +1,77 @@
+/* public/css/components/source-badge.css */
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main, #E5E7EB);
+  width: fit-content;
+}
+
+.source-badge:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.source-badge-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Variações de estilo por fonte */
+.source-badge-gutenberg {
+  background: rgba(25, 135, 84, 0.15);
+  border-color: rgba(25, 135, 84, 0.4);
+  color: #75B798;
+}
+
+.source-badge-mec {
+  background: rgba(42, 157, 143, 0.15);
+  border-color: rgba(42, 157, 143, 0.4);
+  color: #72E1D1;
+}
+
+.source-badge-bn {
+  background: rgba(224, 169, 109, 0.15);
+  border-color: rgba(224, 169, 109, 0.4);
+  color: #E0A96D;
+}
+
+.source-badge-original {
+  background: rgba(157, 78, 221, 0.15);
+  border-color: rgba(157, 78, 221, 0.4);
+  color: #C77DFF;
+}
+
+/* Badge posicionada em cima da capa no Card (topo direito para não sobrepor o gênero) */
+.card-source-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Badge no Cabeçalho do Leitor */
+.reader-source-tag {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}

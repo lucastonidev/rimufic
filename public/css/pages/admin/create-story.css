@@ -298,6 +298,104 @@
   text-indent: 0;
 }
 
+/* Citação / Pergaminho */
+.editor-content blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(157, 78, 221, 0.08);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #E2D6F5;
+  text-indent: 0;
+}
+
+/* Barra de Status do Rodapé do Editor */
+.editor-statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1.5rem;
+  background: rgba(18, 12, 24, 0.95);
+  border-top: 1px solid var(--glass-border);
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.editor-statusbar .status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editor-statusbar .status-dot {
+  margin: 0 8px;
+  opacity: 0.5;
+}
+
+.autosave-indicator {
+  color: var(--accent);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================================
+   MODO ZEN (FOCO TOTAL SEM DISTRAÇÕES)
+   ======================================================== */
+body.zen-mode .admin-sidebar,
+body.zen-mode .sticky-header,
+body.zen-mode .tabs-nav {
+  display: none !important;
+}
+
+body.zen-mode .admin-layout {
+  display: block !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+body.zen-mode .create-story-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  background: #0B0710;
+}
+
+body.zen-mode .tabs-container {
+  max-width: 900px;
+  height: 100vh;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+body.zen-mode .tab-pane {
+  height: 100%;
+}
+
+body.zen-mode .editor-panel {
+  height: calc(100vh - 2rem);
+  border-radius: 12px;
+}
+
+body.zen-mode .editor-content {
+  padding: 3rem 6%;
+}
+
 /* Botão de Template na Toolbar */
 .btn-template {
   margin-left: auto;

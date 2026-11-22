@@ -20,6 +20,11 @@ export const processAndUploadContent = async (
   content,
   file,
   isUpdate = false,
+  format = "text",
+  pdfFile = null,
+  pdfUrl = "",
+  sourceType = "original",
+  sourceUrl = "",
 ) => {
   const slug = title
     .toLowerCase()
@@ -30,7 +35,7 @@ export const processAndUploadContent = async (
 
   let finalCoverUrl = coverUrl || "";
 
-  // Processamento e fila de imagens
+  // 1. Processamento e fila de imagens da Capa
   if (file) {
     const imagePath = `content/covers/${slug}.webp`;
 
@@ -52,20 +57,40 @@ export const processAndUploadContent = async (
     finalCoverUrl = `https://cdn.jsdelivr.net/gh/lucastonidev/rimufic-storys@main/${imagePath}`;
   }
 
-  // Processamento de Texto e Markdown
-  const markdownBody = turndownService.turndown(content);
-  const dateField = isUpdate ? "updated_at" : "created_at";
-  const mdFileContent = `---\ntitle: "${title}"\nauthor: "${author || "Grão-Mestre"}"\ngenre: "${genre || "folclore"}"\ncover_url: "${finalCoverUrl}"\nsynopsis: "${synopsis || ""}"\n${dateField}: "${new Date().toISOString()}"\n---\n\n${markdownBody}`;
+  // 2. Processamento do Conteúdo (PDF vs Markdown)
+  let finalContentUrl = "";
 
-  const mdPath = `content/stories/${slug}.md`;
-  await uploadToGitHub(
-    mdPath,
-    mdFileContent,
-    `✨ ${isUpdate ? "Atualizando" : "Adicionando"} conto: ${slug}.md`,
-  );
+  if (format === "pdf") {
+    if (pdfFile) {
+      const pdfPath = `content/books/${slug}.pdf`;
+      console.log(`📚 Enviando PDF da obra para o GitHub: ${slug}.pdf...`);
+      await uploadToGitHub(
+        pdfPath,
+        pdfFile.buffer,
+        `📖 ${isUpdate ? "Atualizando" : "Adicionando"} livro em PDF: ${slug}.pdf`,
+      );
+      finalContentUrl = `https://cdn.jsdelivr.net/gh/lucastonidev/rimufic-storys@main/${pdfPath}`;
+    } else if (pdfUrl && pdfUrl.trim() !== "") {
+      finalContentUrl = pdfUrl.trim();
+    }
+  } else {
+    // Processamento de Texto e Markdown
+    const markdownBody = turndownService.turndown(content || "");
+    const dateField = isUpdate ? "updated_at" : "created_at";
+    const mdFileContent = `---\ntitle: "${title}"\nauthor: "${author || "Grão-Mestre"}"\ngenre: "${genre || "folclore"}"\ncover_url: "${finalCoverUrl}"\nsynopsis: "${synopsis || ""}"\nsource_type: "${sourceType || "original"}"\nsource_url: "${sourceUrl || ""}"\nformat: "text"\n${dateField}: "${new Date().toISOString()}"\n---\n\n${markdownBody}`;
+
+    const mdPath = `content/stories/${slug}.md`;
+    await uploadToGitHub(
+      mdPath,
+      mdFileContent,
+      `✨ ${isUpdate ? "Atualizando" : "Adicionando"} conto: ${slug}.md`,
+    );
+
+    finalContentUrl = `https://cdn.jsdelivr.net/gh/lucastonidev/rimufic-storys@main/${mdPath}`;
+  }
 
   return {
-    markdownUrl: `https://cdn.jsdelivr.net/gh/lucastonidev/rimufic-storys@main/${mdPath}`,
+    markdownUrl: finalContentUrl,
     finalCoverUrl,
   };
 };
@@ -79,13 +104,32 @@ export const insertStoryToDatabase = async (storyPayload, userToken) => {
     },
   );
 
-  const { data, error } = await userSupabase
-    .from("stories")
-    .insert([storyPayload])
-    .select();
-  if (error) throw error;
-  clearStoryCache();
-  return data;
+  try {
+    const { data, error } = await userSupabase
+      .from("stories")
+      .insert([storyPayload])
+      .select();
+    if (error) throw error;
+    clearStoryCache();
+    return data;
+  } catch (err) {
+    // Fallback defensivo: se a tabela stories ainda não tem colunas source_type/source_url no banco
+    if (err.message && (err.message.includes("source_") || err.message.includes("format"))) {
+      const sanitizedPayload = { ...storyPayload };
+      delete sanitizedPayload.source_type;
+      delete sanitizedPayload.source_url;
+      delete sanitizedPayload.format;
+
+      const { data, error } = await userSupabase
+        .from("stories")
+        .insert([sanitizedPayload])
+        .select();
+      if (error) throw error;
+      clearStoryCache();
+      return data;
+    }
+    throw err;
+  }
 };
 
 export const deleteStoryFromDatabase = async (storyId, userToken) => {
@@ -118,15 +162,35 @@ export const updateStoryInDatabase = async (
     },
   );
 
-  const { data, error } = await userSupabase
-    .from("stories")
-    .update(storyPayload)
-    .eq("id", storyId)
-    .select();
-  if (error) throw error;
+  try {
+    const { data, error } = await userSupabase
+      .from("stories")
+      .update(storyPayload)
+      .eq("id", storyId)
+      .select();
+    if (error) throw error;
 
-  clearStoryCache(storyId);
-  return data;
+    clearStoryCache(storyId);
+    return data;
+  } catch (err) {
+    if (err.message && (err.message.includes("source_") || err.message.includes("format"))) {
+      const sanitizedPayload = { ...storyPayload };
+      delete sanitizedPayload.source_type;
+      delete sanitizedPayload.source_url;
+      delete sanitizedPayload.format;
+
+      const { data, error } = await userSupabase
+        .from("stories")
+        .update(sanitizedPayload)
+        .eq("id", storyId)
+        .select();
+      if (error) throw error;
+
+      clearStoryCache(storyId);
+      return data;
+    }
+    throw err;
+  }
 };
 
 export const getStoryById = async (storyId, userToken) => {

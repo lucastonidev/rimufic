@@ -22,17 +22,26 @@
                     <span>0 Obras Salvas</span>
                 </div>
             </div>
+
+            <!-- Abas da Biblioteca: Favoritos vs Baixados Offline -->
+            <div class="library-tabs" style="display: flex; gap: 12px; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem;">
+                <button class="opt-btn active" id="tabFavorites" onclick="switchLibraryTab('favorites')" style="display: inline-flex; align-items: center; gap: 8px; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;">
+                    <i class="ph-fill ph-heart" style="color: #EC4899;"></i> Favoritos Salvos
+                </button>
+                <button class="opt-btn" id="tabOffline" onclick="switchLibraryTab('offline')" style="display: inline-flex; align-items: center; gap: 8px; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;">
+                    <i class="ph-fill ph-cloud-check" style="color: #10B981;"></i> Baixados Offline
+                </button>
+            </div>
         
             <!-- O JavaScript vai injetar os cards aqui dentro -->
             <div class="story-grid" id="favoritesGrid"></div>
         
             <!-- Empty State -->
             <div class="empty-state" id="emptyState" style="display: none;">
-                <i class="ph ph-ghost"></i>
-                <h2>Sua biblioteca está vazia...</h2>
-                <p>Parece que você ainda não encontrou nenhuma lenda para guardar. Explore o acervo e favorite suas histórias
-                    preferidas!</p>
-                <a href="/search" class="btn-primary" style="width: fit-content; margin: 0 auto;">
+                <i class="ph ph-ghost" id="emptyStateIcon"></i>
+                <h2 id="emptyStateTitle">Sua biblioteca está vazia...</h2>
+                <p id="emptyStateText">Parece que você ainda não encontrou nenhuma lenda para guardar. Explore o acervo e favorite suas histórias preferidas!</p>
+                <a href="/search" class="btn-primary" id="emptyStateAction" style="width: fit-content; margin: 0 auto;">
                     <i class="ph ph-magnifying-glass"></i> Explorar Acervo
                 </a>
             </div>

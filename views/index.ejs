@@ -42,35 +42,59 @@
                     <% if (stories && stories.length> 0) { %>
                         <% stories.forEach(story=> { %>
                             <article class="story-card glass">
-                
-                                <!-- Substituímos o style="display: contents" pela classe -->
-                                <a href="/read/<%= story.id %>" class="card-link">
-                                    <div class="card-cover">
-                                        <% if (story.cover_url) { %>
-                                            <img src="<%= story.cover_url %>" alt="Capa da história <%= story.title %>">
-                                            <% } else { %>
-                                                <img src="/assets/banner-magic.jpeg" alt="Capa Padrão">
-                                                <% } %>
-                                    </div>
-                
+                                <div class="card-cover">
+                                    <% if (story.cover_url) { %>
+                                        <img src="<%= story.cover_url %>" alt="Capa da história <%= story.title %>">
+                                    <% } else { %>
+                                        <img src="/assets/banner-magic.jpeg" alt="Capa Padrão">
+                                    <% } %>
+                                </div>
+
+                                <span class="card-genre">
+                                    <%= story.genre %>
+                                </span>
+
+                                <% if (story.source_type && story.source_type !== 'original') { %>
+                                  <% 
+                                    let cardBadgeIcon = '/assets/sources/rimufic.svg';
+                                    let cardBadgeClass = 'source-badge-original';
+                                    let cardBadgeText = 'Domínio Público';
+                                    if (story.source_type === 'gutenberg') {
+                                      cardBadgeIcon = '/assets/sources/gutenberg.svg';
+                                      cardBadgeClass = 'source-badge-gutenberg';
+                                      cardBadgeText = 'Gutenberg';
+                                    } else if (story.source_type === 'dominio_publico_mec') {
+                                      cardBadgeIcon = '/assets/sources/mec.svg';
+                                      cardBadgeClass = 'source-badge-mec';
+                                      cardBadgeText = 'MEC';
+                                    } else if (story.source_type === 'biblioteca_nacional') {
+                                      cardBadgeIcon = '/assets/sources/bn.svg';
+                                      cardBadgeClass = 'source-badge-bn';
+                                      cardBadgeText = 'BN';
+                                    }
+                                  %>
+                                  <span class="source-badge card-source-tag <%= cardBadgeClass %>">
+                                    <img src="<%= cardBadgeIcon %>" class="source-badge-icon" alt="">
+                                    <span><%= cardBadgeText %></span>
+                                  </span>
+                                <% } %>
+
+                                <div class="card-body">
                                     <h3 class="card-title">
                                         <%= story.title %>
                                     </h3>
-                                    <p class="card-author">por <%= story.author %>
-                                    </p>
-                                </a>
+                                    <p class="card-author">por <%= story.author %></p>
+                                </div>
                 
                                 <div class="card-footer">
-                                    <!-- Substituímos o style="text-transform: capitalize" -->
-                                    <span class="card-genre">
-                                        <%= story.genre %>
-                                    </span>
                                     <button class="btn-fav" data-id="<%= story.id %>" data-title="<%= story.title %>"
                                         data-author="<%= story.author %>" data-cover="<%= story.cover_url || '' %>"
                                         data-genre="<%= story.genre %>" onclick="toggleFav(this)" title="Adicionar aos favoritos">
                                         <i class="ph ph-heart"></i>
                                     </button>
                                 </div>
+
+                                <a href="/read/<%= story.id %>" class="card-stretched-link" aria-label="Ler <%= story.title %>"></a>
                             </article>
                             <% }) %>
                                 <% } else { %>

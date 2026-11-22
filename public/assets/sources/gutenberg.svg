@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#0A3622"/>
+  <!-- Livro estilizado do Gutenberg com o clássico P e G -->
+  <path d="M12 12C12 12 16 10 24 13C32 10 36 12 36 12V34C36 34 31 32 24 35C17 32 12 34 12 34V12Z" fill="#198754" stroke="#75B798" stroke-width="2"/>
+  <path d="M24 13V35" stroke="#75B798" stroke-width="2"/>
+  <!-- Letra P e G entrelaçadas -->
+  <path d="M17 18H21C22.6569 18 24 19.3431 24 21C24 22.6569 22.6569 24 21 24H17V18Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M17 18V28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M31 22C31 20 29.5 18 27.5 18C25.5 18 24 19.5 24 22V24C24 26.5 25.5 28 27.5 28C29.5 28 31 26.5 31 24.5H28" stroke="#FFD166" stroke-width="2" stroke-linecap="round"/>
+</svg>

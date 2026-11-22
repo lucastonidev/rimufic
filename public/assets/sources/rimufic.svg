@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#1C102E"/>
+  <!-- Selo Grimório Original Rimufic -->
+  <circle cx="24" cy="24" r="18" fill="#2E124D" stroke="#9D4EDD" stroke-width="1.5"/>
+  <!-- Estrela de quatro pontas mística -->
+  <path d="M24 10L26 21L37 24L26 27L24 38L22 27L11 24L22 21L24 10Z" fill="#C77DFF"/>
+  <circle cx="24" cy="24" r="3.5" fill="#FFD166"/>
+</svg>

@@ -106,12 +106,22 @@ class ReaderController {
     });
 
     document.addEventListener("keydown", (e) => {
-      if (this.state.mode === "simple") {
-        if (e.key === "ArrowRight") this.simpleMotor.nextPage();
-        if (e.key === "ArrowLeft") this.simpleMotor.prevPage();
-      } else if (this.state.mode === "realistic") {
-        if (e.key === "ArrowRight") this.realisticMotor.nextPage();
-        if (e.key === "ArrowLeft") this.realisticMotor.prevPage();
+      // Ignora se o usuário estiver digitando em um input
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowRight") {
+        if (this.state.mode === "simple") this.simpleMotor.nextPage();
+        else if (this.state.mode === "realistic") this.realisticMotor.nextPage();
+      } else if (e.key === "ArrowLeft") {
+        if (this.state.mode === "simple") this.simpleMotor.prevPage();
+        else if (this.state.mode === "realistic") this.realisticMotor.prevPage();
+      } else if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        this.toggleFullscreen();
+      } else if (e.key === "Escape") {
+        if (this.ui.settingsPanel.classList.contains("active")) {
+          this.ui.settingsPanel.classList.remove("active");
+        }
       }
     });
 
@@ -144,11 +154,52 @@ class ReaderController {
   init() {
     this.setAnimation("flip");
     this.setReadingMode("simple");
+    setTimeout(() => this.restoreBookmark(), 250);
+  }
+
+  saveBookmark(current, total) {
+    if (!current || current <= 0) return;
+    try {
+      localStorage.setItem(
+        `@rimufic:bookmark:${window.location.pathname}`,
+        JSON.stringify({ page: current, total, updatedAt: Date.now() }),
+      );
+    } catch (e) {
+      console.warn("Não foi possível salvar o marcador:", e);
+    }
+  }
+
+  restoreBookmark() {
+    try {
+      const data = localStorage.getItem(
+        `@rimufic:bookmark:${window.location.pathname}`,
+      );
+      if (!data) return;
+      const bookmark = JSON.parse(data);
+      if (
+        bookmark &&
+        bookmark.page > 1 &&
+        bookmark.page <= this.state.simpleTotalPages
+      ) {
+        this.state.simpleCurrentPage = bookmark.page - 1;
+        this.simpleMotor.updateView("none");
+        if (window.showToast) {
+          window.showToast(
+            `Marcador: Retomando da página ${bookmark.page}`,
+            "info",
+            "ph-bookmark-simple",
+          );
+        }
+      }
+    } catch (e) {
+      console.warn("Erro ao restaurar marcador de página:", e);
+    }
   }
 
   updateUIProgress(current, total) {
     this.ui.pageInfo.innerText = `Página ${current} de ${total}`;
     this.ui.progressBar.style.width = `${(current / total) * 100}%`;
+    this.saveBookmark(current, total);
   }
 
   setTheme(theme) {
